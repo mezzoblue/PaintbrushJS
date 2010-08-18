@@ -82,9 +82,11 @@ function addFilter(filterType) {
 			}
 			// we need to figure out RGB values for tint, let's do that ahead and not waste time in the loop
 			if (filterType == "filter-tint") {
-				src = createColor(params.tintColor);
-				var dest = getRGB(parseInt(src.substring(0, 2), 16), parseInt(src.substring(2, 4), 16), parseInt(src.substring(4, 6), 16)); 
+				var src  = parseInt(createColor(params.tintColor), 16),
+				    dest = getRGB(((src & 0xFF0000) >> 16), ((src & 0x00FF00) >> 8), (src & 0x0000FF)); 
 			}
+			
+			
 	
 			// the main loop through every pixel to apply effects
 			// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
