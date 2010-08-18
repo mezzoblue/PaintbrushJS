@@ -118,20 +118,21 @@ function addFilter(filterType) {
 	function getReferenceImage(ref) {
 		if (ref.nodeName == "IMG") {
 			// create a reference to the image
-			var img = ref;
-		} else {
-			// otherwise check if a background image exists
-			var bg = window.getComputedStyle(ref, null).backgroundImage;
-			// if so, we're going to pull it out and create a new img element in the DOM
-			if (bg) {
-				var img = new Image();
-				// kill quotes in background image declaration, if they exist
-				bg = bg.replace(/['"]/g,'');
-				// return just the URL itself				
-				img.src = bg.slice(4, -1);
-			}
+			return ref;
+		} 
+		
+		// otherwise check if a background image exists
+		var bg = window.getComputedStyle(ref, null).backgroundImage;
+		
+		// if so, we're going to pull it out and create a new img element in the DOM
+		if (bg) {
+			var img = new Image();
+			// kill quotes in background image declaration, if they exist
+			// and return just the URL itself
+			img.src = bg.replace(/['"]/g,'').slice(4, -1);
 		}
-		return(img);
+		
+		return img;
 	}
 
 	// re-draw manipulated pixels to the reference image, regardless whether it was an img element or some other element with a background image
