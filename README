@@ -6,4 +6,14 @@ Developed by Dave Shea, http://www.mezzoblue.com/
 PaintbrushJS on GitHub: http://github.com/mezzoblue/PaintbrushJS
 
 
-{this is a placeholder project for now, coming very soon}
+PaintbrushJS is a lightweight, browser-based image processing library 
+that can apply various visual filters to images within a web page.
+
+You use it by applying a class to an element on the page and setting 
+a few parameters with some extra HTML attributes. If the element is
+an img or it has a background-image set in your CSS, PaintbrushJS 
+will create a temporary canvas element and manipulate the image 
+there, before finally saving it back out to the original element.
+
+See PaintbrushJS in action: http://mezzoblue.com/paintbrushjs/demo/
+Documentation: http://wiki.github.com/mezzoblue/PaintbrushJS/documentation

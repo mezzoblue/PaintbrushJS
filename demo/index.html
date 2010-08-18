@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+	<head>
+		<title>PaintbrushJS v0.1 Demo Page</title>
+		<meta charset="utf-8" />
+
+		<script type="text/javascript" src="common.js"></script>
+		<script type="text/javascript" src="../paintbrush-0.1.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+	<body>
+		
+		<h1>PaintbrushJS v0.1 Demo Page</h1>
+		
+		<ul class="odd">
+			<li>
+				<figure>
+					<img src="example-images/240-lighthouse.jpg" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<figcaption>Original, default (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="example-images/240-lighthouse.jpg" class="filter-sepia" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<figcaption>Sepia tone, default (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="example-images/240-lighthouse.jpg" class="filter-greyscale" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<figcaption>Greyscale, default (img)</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="example-images/240-lighthouse.jpg" class="filter-tint" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<figcaption>Tint filter, default (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="example-images/240-lighthouse.jpg" class="filter-blur" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<figcaption>Blur, default (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="example-images/240-lighthouse.jpg" class="filter-noise" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<figcaption>Noise, default (img)</figcaption>
+				</figure>
+			</li>
+		</ul>		
+
+
+		<ul class="odd">
+			<li>
+				<div class="bee">
+					<p>Original (CSS Background)</p>
+				</div>
+			</li>
+			<li>
+				<div class="bee filter-sepia"
+					data-pb-sepia-amount="0.5">
+					<p>Sepia tone: Amount 0.5 (CSS Background)</p>
+				</div>
+			</li>
+			<li>
+				<div class="bee filter-greyscale"
+					data-pb-greyscale-amount="0.5">
+					<p>Greyscale: Amount 0.5 (CSS Background)</p>
+				</div>
+			</li>
+		</ul>		
+		<ul>
+			<li>
+				<div class="bee filter-tint"
+					data-pb-tint-amount="0.2" 
+					data-pb-tint-color="#f0c">
+					<p>Tint filter: Amount 0.2, Color #FF00CC (CSS Background)</p>
+				</div>
+			</li>
+			<li>
+				<div class="bee filter-blur"
+					data-pb-blur-amount="3">
+					<p>Blur: Amount 3 (CSS Background)</p>
+				</div>
+			</li>
+			<li>
+				<div class="bee filter-noise" 
+					data-pb-noise-amount="30"
+					data-pb-noise-type="monochrome">
+					<p>Noise: Amount 30, Type monochrome (CSS Background)</p>
+				</div>
+			</li>
+		</ul>		
+
+		<ul class="odd">
+			<li>
+				<figure>
+					<img src="example-images/240-road.jpg" width="240" height="160" alt="West Coast roads, New Zealand">
+					<figcaption>Original (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="example-images/240-road.jpg" class="filter-sepia" 
+						data-pb-sepia-amount="0.7"
+						width="240" height="160" alt="West Coast roads, New Zealand">
+					<figcaption>Sepia tone: Amount 0.7 (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="example-images/240-road.jpg" class="filter-greyscale" 
+						data-pb-greyscale-amount="0.8"
+						width="240" height="160" alt="West Coast roads, New Zealand">
+					<figcaption>Greyscale: Amount 0.8 (img)</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="example-images/240-road.jpg" class="filter-tint" 
+						data-pb-tint-amount="0.5" 
+						data-pb-tint-color="#009900" 
+						width="240" height="160" alt="West Coast roads, New Zealand">
+					<figcaption>Tint filter: Amount 0.5, Color #090 (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="example-images/240-road.jpg" class="filter-blur" 
+						data-pb-blur-amount="0.4" 
+						width="240" height="160" alt="West Coast roads, New Zealand">
+					<figcaption>Blur: Amount 0.4 (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="example-images/240-road.jpg" class="filter-noise"
+						data-pb-noise-amount="200"
+						data-pb-noise-type="colour"
+						width="240" height="160" alt="West Coast roads, New Zealand">
+					<figcaption>Noise: Amount 200, Type color (img)</figcaption>
+				</figure>
+			</li>
+		</ul>		
+
+		<ul class="odd">
+			<li>
+				<div class="stones">
+					<p>Original (CSS Background)</p>
+				</div>
+			</li>
+			<li>
+				<div class="stones filter-sepia"
+					data-pb-sepia-amount="2">
+					<p>Sepia tone: Amount 2 (CSS Background)</p>
+				</div>
+			</li>
+			<li>
+				<div class="stones filter-greyscale"
+					data-pb-greyscale-amount="-2">
+					<p>Greyscale: Amount -2 (saturation hack) (CSS Background)</p>
+				</div>
+			</li>
+		</ul>		
+		<ul>
+			<li>
+				<div class="stones filter-tint"
+					data-pb-tint-amount="0.4" 
+					data-pb-tint-color="#06F">
+					<p>Tint filter: Amount 0.4, Color #06F (CSS Background)</p>
+				</div>
+			</li>
+			<li>
+				<div class="stones filter-blur"
+					data-pb-blur-amount="10">
+					<p>Blur: Amount 10 (CSS Background)</p>
+				</div>
+			</li>
+			<li>
+				<div class="stones filter-noise" 
+					data-pb-noise-amount="150"
+					data-pb-noise-type="mono">
+					<p>Noise: Amount 150, Type mono (CSS Background)</p>
+				</div>
+			</li>
+		</ul>		
+
+
+		<p id="copyright">&copy; Copyright 2010, Dave Shea. <a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS lives on GitHub.</a> <a href="http://www.opensource.org/licenses/mit-license.php">MIT Licensed.</a></p>
+
+
+	</body>
+</html>
