@@ -16,6 +16,12 @@
 
 // basic loader function to attach all filters being used within the page
 addLoadEvent(function() {
+	
+	// only run this if we're going to time it
+	if(!(typeof(runTimer) == 'undefined')) {
+	 	var s = startTimer();
+	}
+ 
 	// only run if this browser supports canvas, obviously
 	if (supports_canvas()) {
 		// you can add or remove lines here, depending on which filters you're using.
@@ -25,6 +31,12 @@ addLoadEvent(function() {
 		addFilter("filter-sepia");
 		addFilter("filter-tint");
 	}
+	
+	// only run this if we're going to time it
+	if(!(typeof(runTimer) == 'undefined')) {
+		endTimer(s);
+	}
+	
 });
 
 
