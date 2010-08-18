@@ -90,11 +90,11 @@ function addFilter(filterType) {
 	
 			// the main loop through every pixel to apply effects
 			// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
-			for (var i = 0; i < pixels.data.length / 4; i++) {
+			for (var i = 0, data = pixels.data, length = data.length; i < length / 4; i++) {
 				var index = i * 4;
 	
 				// get each colour value of current pixel
-				var thisPixel = getRGB(pixels.data[index], pixels.data[index + 1], pixels.data[index + 2]);
+				var thisPixel = getRGB(data[index], data[index + 1], data[index + 2]);
 	
 				// the biggie: if we're here, let's get some filter action happening
 				pixels = applyFilters(filterType, params, pixels, index, thisPixel, dest);
