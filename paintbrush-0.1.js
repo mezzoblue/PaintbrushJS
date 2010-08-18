@@ -197,10 +197,10 @@ function addFilter(filterType) {
 	// parse a shorthand or longhand hex string, with or without the leading '#', into something usable
 	function createColor(src) {
 		// strip the leading #, if it exists
-		if ((src.length == 7) || (src.length == 4)) src = src.substring(1, src.length);
+		src = src.replace(/^#/,'');
 		// if it's shorthand, expand the values (this seems overly verbose)
 		if (src.length == 3) {
-			src = src.substring(0, 1) + src.substring(0, 1) + src.substring(1, 2) + src.substring(1, 2) + src.substring(2, 3) + src.substring(2, 3);
+			src = src.replace(/(.)/g,'$1$1');
 		}
 		return(src);
 	}
