@@ -108,14 +108,6 @@ function addFilter(filterType) {
 
 
 
-	// take three input values and return as a single object with split RGB values
-	function getRGB(rx, gx, bx) {
-		var r = rx;
-		var g = gx;
-		var b = bx;
-		return {r : r, g : g, b : b}
-	}
-
 
 
 	// sniff whether this is an actual img element, or some other element with a background image
@@ -181,7 +173,7 @@ function addFilter(filterType) {
 		params = createParameter(ref.getAttribute("data-pb-tint-amount"), "tintAmount", params);
 		params = createParameter(ref.getAttribute("data-pb-tint-color"), "tintColor", params);
 			// O Canada, I got your back. (And UK, AU, NZ, IE, etc.)
-			params = createParameter(ref.getAttribute("data-pb-tint-colour"), "tintColour", params);
+			params = createParameter(ref.getAttribute("data-pb-tint-colour"), "tintColor", params);
 
 		return(params);
 	}
@@ -218,7 +210,22 @@ function addFilter(filterType) {
 		return(dif * dest + (1 - dif) * src);
 	}
 
+	// take three input values and return as a single object with split RGB values
+	function getRGB(rx, gx, bx) {
+		var r = rx;
+		var g = gx;
+		var b = bx;
+		return {r : r, g : g, b : b}
+	}
 
+	// throw three new RGB values into the pixels object at a specific spot
+	function setRGB(pixels, index, r, g, b) {
+		pixels.data[index] = r;
+		pixels.data[index + 1] = g;
+		pixels.data[index + 2] = b;
+		return pixels;
+	}
+	
 
 	// the function that actually manipulates the pixels
 	function applyFilters(filterType, params, pixels, index, thisPixel, dest) {
@@ -228,34 +235,39 @@ function addFilter(filterType) {
 
 			case "filter-greyscale":
 				var val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
-				pixels.data[index] = findColorDifference(params.greyscaleAmount, val, thisPixel.r);
-				pixels.data[index + 1] = findColorDifference(params.greyscaleAmount, val, thisPixel.g);
-				pixels.data[index + 2] = findColorDifference(params.greyscaleAmount, val, thisPixel.b);
+				pixels = setRGB(pixels, index, 
+					findColorDifference(params.greyscaleAmount, val, thisPixel.r),
+					findColorDifference(params.greyscaleAmount, val, thisPixel.g),
+					findColorDifference(params.greyscaleAmount, val, thisPixel.b));
 				break;
 
 			case "filter-noise":
 				var val = noise(params.noiseAmount);
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
-					pixels.data[index] = thisPixel.r + val;
-					pixels.data[index + 1] = thisPixel.g + val;
-					pixels.data[index + 2] = thisPixel.b + val;
+					pixels = setRGB(pixels, index, 
+						thisPixel.r + val,
+						thisPixel.g + val,
+						thisPixel.b + val);
 				} else {
-					pixels.data[index] = thisPixel.r + noise(params.noiseAmount);
-					pixels.data[index + 1] = thisPixel.g + noise(params.noiseAmount);
-					pixels.data[index + 2] = thisPixel.b + noise(params.noiseAmount);
+					pixels = setRGB(pixels, index, 
+						thisPixel.r + noise(params.noiseAmount),
+						thisPixel.g + noise(params.noiseAmount),
+						thisPixel.b + noise(params.noiseAmount));
 				}
 				break;
 				
 			case "filter-tint":
-				pixels.data[index] = findColorDifference(params.tintAmount, dest.r, thisPixel.r);
-				pixels.data[index + 1] = findColorDifference(params.tintAmount, dest.g, thisPixel.g);
-				pixels.data[index + 2] = findColorDifference(params.tintAmount, dest.b, thisPixel.b);
+				pixels = setRGB(pixels, index, 
+					findColorDifference(params.tintAmount, dest.r, thisPixel.r),
+					findColorDifference(params.tintAmount, dest.g, thisPixel.g),
+					findColorDifference(params.tintAmount, dest.b, thisPixel.b));
 				break;
 				
 			case "filter-sepia":
-				pixels.data[index] = findColorDifference(params.sepiaAmount, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r);
-				pixels.data[index + 1] = findColorDifference(params.sepiaAmount, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g);
-				pixels.data[index + 2] = findColorDifference(params.sepiaAmount, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b);
+				pixels = setRGB(pixels, index, 
+					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
+					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
+					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
 				break;
 		}
 		return(pixels);
