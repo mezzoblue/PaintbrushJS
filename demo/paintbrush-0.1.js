@@ -14,10 +14,11 @@
 
 
 
+
 // basic loader function to attach all filters being used within the page
 addLoadEvent(function() {
-	
-	// only run this if we're going to time it
+
+	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
 	if(!(typeof(runTimer) == 'undefined')) {
 	 	var s = startTimer();
 	}
@@ -31,12 +32,12 @@ addLoadEvent(function() {
 		addFilter("filter-sepia");
 		addFilter("filter-tint");
 	}
-	
-	// only run this if we're going to time it
+
+	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
 	if(!(typeof(runTimer) == 'undefined')) {
 		endTimer(s);
 	}
-	
+
 });
 
 
@@ -61,15 +62,17 @@ function addFilter(filterType) {
 
 		// make sure we've actually got something to work with
 		if (img.width) {
-			processFilters(img, filterType, params, current, toFilter);
+			processFilters(filterType, img, params, current, toFilter);
 		} else {
-			img.onLoad = processFilters(img, filterType, params, current, toFilter);
+			// otherwise, wait till the img loads before processing
+			// (what happens if the img never loads? jury's still out)
+			img.onLoad = processFilters(filterType, img, params, current, toFilter);
 		}
 
 	}
 
 
-	function processFilters(img, filterType, params, current, toFilter) {
+	function processFilters(filterType, img, params, current, toFilter) {
 
 		// create working buffer
 		var buffer = document.createElement("canvas");
@@ -93,17 +96,19 @@ function addFilter(filterType) {
 			}
 			// we need to figure out RGB values for tint, let's do that ahead and not waste time in the loop
 			if (filterType == "filter-tint") {
-				src = createColor(params.tintColor);
-				var dest = getRGB(parseInt(src.substring(0, 2), 16), parseInt(src.substring(2, 4), 16), parseInt(src.substring(4, 6), 16)); 
+				var src  = parseInt(createColor(params.tintColor), 16),
+				    dest = getRGB(((src & 0xFF0000) >> 16), ((src & 0x00FF00) >> 8), (src & 0x0000FF)); 
 			}
+			
+			
 	
 			// the main loop through every pixel to apply effects
 			// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
-			for (var i = 0; i < pixels.data.length / 4; i++) {
+			for (var i = 0, data = pixels.data, length = data.length; i < length / 4; i++) {
 				var index = i * 4;
 	
 				// get each colour value of current pixel
-				var thisPixel = getRGB(pixels.data[index], pixels.data[index + 1], pixels.data[index + 2]);
+				var thisPixel = getRGB(data[index], data[index + 1], data[index + 2]);
 	
 				// the biggie: if we're here, let's get some filter action happening
 				pixels = applyFilters(filterType, params, pixels, index, thisPixel, dest);
@@ -118,14 +123,6 @@ function addFilter(filterType) {
 	}
 
 
-
-	// take three input values and return as a single object with split RGB values
-	function getRGB(rx, gx, bx) {
-		var r = rx;
-		var g = gx;
-		var b = bx;
-		return {r : r, g : g, b : b}
-	}
 
 
 
@@ -192,7 +189,7 @@ function addFilter(filterType) {
 		params = createParameter(ref.getAttribute("data-pb-tint-amount"), "tintAmount", params);
 		params = createParameter(ref.getAttribute("data-pb-tint-color"), "tintColor", params);
 			// O Canada, I got your back. (And UK, AU, NZ, IE, etc.)
-			params = createParameter(ref.getAttribute("data-pb-tint-colour"), "tintColour", params);
+			params = createParameter(ref.getAttribute("data-pb-tint-colour"), "tintColor", params);
 
 		return(params);
 	}
@@ -216,10 +213,10 @@ function addFilter(filterType) {
 	// parse a shorthand or longhand hex string, with or without the leading '#', into something usable
 	function createColor(src) {
 		// strip the leading #, if it exists
-		if ((src.length == 7) || (src.length == 4)) src = src.substring(1, src.length);
-		// if it's shorthand, expand the values (this seems overly verbose)
+		src = src.replace(/^#/, '');
+		// if it's shorthand, expand the values
 		if (src.length == 3) {
-			src = src.substring(0, 1) + src.substring(0, 1) + src.substring(1, 2) + src.substring(1, 2) + src.substring(2, 3) + src.substring(2, 3);
+			src = src.replace(/(.)/g, '$1$1');
 		}
 		return(src);
 	}
@@ -229,44 +226,67 @@ function addFilter(filterType) {
 		return(dif * dest + (1 - dif) * src);
 	}
 
+	// take three input values and return as a single object with split RGB values
+	function getRGB(rx, gx, bx) {
+		var r = rx;
+		var g = gx;
+		var b = bx;
+		return {r : r, g : g, b : b}
+	}
 
+	// throw three new RGB values into the pixels object at a specific spot
+	function setRGB(data, index, r, g, b) {
+		data[index] = r;
+		data[index + 1] = g;
+		data[index + 2] = b;
+		return data;
+	}
+	
 
 	// the function that actually manipulates the pixels
 	function applyFilters(filterType, params, pixels, index, thisPixel, dest) {
+
+		// speed up access
+		var data = pixels.data;
 
 		// figure out which filter to apply, and do it	
 		switch(filterType) {
 
 			case "filter-greyscale":
 				var val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
-				pixels.data[index] = findColorDifference(params.greyscaleAmount, val, thisPixel.r);
-				pixels.data[index + 1] = findColorDifference(params.greyscaleAmount, val, thisPixel.g);
-				pixels.data[index + 2] = findColorDifference(params.greyscaleAmount, val, thisPixel.b);
+				data = setRGB(data, index, 
+					findColorDifference(params.greyscaleAmount, val, thisPixel.r),
+					findColorDifference(params.greyscaleAmount, val, thisPixel.g),
+					findColorDifference(params.greyscaleAmount, val, thisPixel.b));
 				break;
 
 			case "filter-noise":
 				var val = noise(params.noiseAmount);
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
-					pixels.data[index] = thisPixel.r + val;
-					pixels.data[index + 1] = thisPixel.g + val;
-					pixels.data[index + 2] = thisPixel.b + val;
+					data = setRGB(data, index, 
+						thisPixel.r + val,
+						thisPixel.g + val,
+						thisPixel.b + val);
 				} else {
-					pixels.data[index] = thisPixel.r + noise(params.noiseAmount);
-					pixels.data[index + 1] = thisPixel.g + noise(params.noiseAmount);
-					pixels.data[index + 2] = thisPixel.b + noise(params.noiseAmount);
+					data = setRGB(data, index, 
+						thisPixel.r + noise(params.noiseAmount),
+						thisPixel.g + noise(params.noiseAmount),
+						thisPixel.b + noise(params.noiseAmount));
 				}
 				break;
 				
 			case "filter-tint":
-				pixels.data[index] = findColorDifference(params.tintAmount, dest.r, thisPixel.r);
-				pixels.data[index + 1] = findColorDifference(params.tintAmount, dest.g, thisPixel.g);
-				pixels.data[index + 2] = findColorDifference(params.tintAmount, dest.b, thisPixel.b);
+				data = setRGB(data, index, 
+					findColorDifference(params.tintAmount, dest.r, thisPixel.r),
+					findColorDifference(params.tintAmount, dest.g, thisPixel.g),
+					findColorDifference(params.tintAmount, dest.b, thisPixel.b));
 				break;
 				
 			case "filter-sepia":
-				pixels.data[index] = findColorDifference(params.sepiaAmount, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r);
-				pixels.data[index + 1] = findColorDifference(params.sepiaAmount, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g);
-				pixels.data[index + 2] = findColorDifference(params.sepiaAmount, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b);
+				data = setRGB(data, index, 
+					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
+					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
+					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
 				break;
 		}
 		return(pixels);
