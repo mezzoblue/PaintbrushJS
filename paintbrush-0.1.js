@@ -223,23 +223,26 @@ function addFilter(filterType) {
 	}
 
 	// throw three new RGB values into the pixels object at a specific spot
-	function setRGB(pixels, index, r, g, b) {
-		pixels.data[index] = r;
-		pixels.data[index + 1] = g;
-		pixels.data[index + 2] = b;
-		return pixels;
+	function setRGB(data, index, r, g, b) {
+		data[index] = r;
+		data[index + 1] = g;
+		data[index + 2] = b;
+		return data;
 	}
 	
 
 	// the function that actually manipulates the pixels
 	function applyFilters(filterType, params, pixels, index, thisPixel, dest) {
 
+		// speed up access
+		var data = pixels.data;
+
 		// figure out which filter to apply, and do it	
 		switch(filterType) {
 
 			case "filter-greyscale":
 				var val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
-				pixels = setRGB(pixels, index, 
+				data = setRGB(data, index, 
 					findColorDifference(params.greyscaleAmount, val, thisPixel.r),
 					findColorDifference(params.greyscaleAmount, val, thisPixel.g),
 					findColorDifference(params.greyscaleAmount, val, thisPixel.b));
@@ -248,12 +251,12 @@ function addFilter(filterType) {
 			case "filter-noise":
 				var val = noise(params.noiseAmount);
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
-					pixels = setRGB(pixels, index, 
+					data = setRGB(data, index, 
 						thisPixel.r + val,
 						thisPixel.g + val,
 						thisPixel.b + val);
 				} else {
-					pixels = setRGB(pixels, index, 
+					data = setRGB(data, index, 
 						thisPixel.r + noise(params.noiseAmount),
 						thisPixel.g + noise(params.noiseAmount),
 						thisPixel.b + noise(params.noiseAmount));
@@ -261,14 +264,14 @@ function addFilter(filterType) {
 				break;
 				
 			case "filter-tint":
-				pixels = setRGB(pixels, index, 
+				data = setRGB(data, index, 
 					findColorDifference(params.tintAmount, dest.r, thisPixel.r),
 					findColorDifference(params.tintAmount, dest.g, thisPixel.g),
 					findColorDifference(params.tintAmount, dest.b, thisPixel.b));
 				break;
 				
 			case "filter-sepia":
-				pixels = setRGB(pixels, index, 
+				data = setRGB(data, index, 
 					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
 					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
 					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
