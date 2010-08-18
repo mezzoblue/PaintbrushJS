@@ -10,6 +10,7 @@
 // --------------------------------------------------
 //
 
+var runTimer = true;
 
 function startTimer() {
 	var s = new Date();
