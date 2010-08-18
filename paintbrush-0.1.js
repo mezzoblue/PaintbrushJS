@@ -50,15 +50,17 @@ function addFilter(filterType) {
 
 		// make sure we've actually got something to work with
 		if (img.width) {
-			processFilters(img, filterType, params, current, toFilter);
+			processFilters(filterType, img, params, current, toFilter);
 		} else {
-			img.onLoad = processFilters(img, filterType, params, current, toFilter);
+			// otherwise, wait till the img loads before processing
+			// (what happens if the img never loads? jury's still out)
+			img.onLoad = processFilters(filterType, img, params, current, toFilter);
 		}
 
 	}
 
 
-	function processFilters(img, filterType, params, current, toFilter) {
+	function processFilters(filterType, img, params, current, toFilter) {
 
 		// create working buffer
 		var buffer = document.createElement("canvas");
@@ -199,10 +201,10 @@ function addFilter(filterType) {
 	// parse a shorthand or longhand hex string, with or without the leading '#', into something usable
 	function createColor(src) {
 		// strip the leading #, if it exists
-		src = src.replace(/^#/,'');
-		// if it's shorthand, expand the values (this seems overly verbose)
+		src = src.replace(/^#/, '');
+		// if it's shorthand, expand the values
 		if (src.length == 3) {
-			src = src.replace(/(.)/g,'$1$1');
+			src = src.replace(/(.)/g, '$1$1');
 		}
 		return(src);
 	}
