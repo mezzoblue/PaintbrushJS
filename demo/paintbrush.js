@@ -7,8 +7,10 @@
 // This project lives on GitHub:
 //    http://github.com/mezzoblue/PaintbrushJS
 //
+// Except where otherwise noted, PaintbrushJS is licensed under the MIT License:
+//    http://www.opensource.org/licenses/mit-license.php
+//
 // --------------------------------------------------
-
 
 
 
