@@ -67,14 +67,14 @@ canvas {
 	padding-top: 160px; 
 }
 .bee {
-	background: url(example-images/240-bee.jpg) no-repeat 0 0;
+	background: url(images/240-bee.jpg) no-repeat 0 0;
 }
 .lighthouse {
-	background: url(example-images/240-lighthouse.jpg) no-repeat 0 0;
+	background: url(images/240-lighthouse.jpg) no-repeat 0 0;
 }
 .road {
-	background: url(example-images/240-road.jpg) no-repeat 0 0;
+	background: url(images/240-road.jpg) no-repeat 0 0;
 }
 .stones {
-	background: url(example-images/240-stones.jpg) no-repeat 0 0;
+	background: url(images/240-stones.jpg) no-repeat 0 0;
 }
