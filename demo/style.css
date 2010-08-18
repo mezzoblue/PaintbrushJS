@@ -1,0 +1,80 @@
+/* --------------------------------------------------
+//
+// style.css
+// Supporting style for the PaintbrushJS demo page
+// (not part of the core PaintbrushJS, safe to delete)
+//
+// This project lives on GitHub:
+//    http://github.com/mezzoblue/PaintbrushJS
+//
+// --------------------------------------------------
+*/
+
+body {
+	font: italic 13px palatino, georgia, serif;
+	margin: 0 50px 50px 50px;
+}
+h1 {
+	color: #bbb;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 0;
+	padding: 50px 0 10px 5px;
+	clear: both;
+}
+ul {
+	clear: left;
+	margin: 0;
+	padding: 0;
+}
+	ul.odd {
+		padding-top: 20px;
+	}
+li {
+	margin: 10px 5px 0 5px;
+	padding: 0;
+	float: left;
+	list-style: none;
+}
+img {
+	display: block;
+}
+figcaption, p {
+	display: block;
+	text-align: center;
+	margin-top: 10px;
+	color: #666;
+}
+#copyright {
+	text-align: left;
+	padding-top: 50px;
+	clear: both;
+}
+
+
+
+
+/* for debugging */
+canvas {
+	display: block;
+	padding: 1px;
+	border: solid 5px #f00;
+}
+
+
+.bee, .lighthouse, .road, .stones {
+	width: 240px;
+	padding-top: 160px; 
+}
+.bee {
+	background: url(images/240-bee.jpg) no-repeat 0 0;
+}
+.lighthouse {
+	background: url(images/240-lighthouse.jpg) no-repeat 0 0;
+}
+.road {
+	background: url(images/240-road.jpg) no-repeat 0 0;
+}
+.stones {
+	background: url(images/240-stones.jpg) no-repeat 0 0;
+}
