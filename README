@@ -15,5 +15,5 @@ an img or it has a background-image set in your CSS, PaintbrushJS
 will create a temporary canvas element and manipulate the image 
 there, before finally saving it back out to the original element.
 
-See PaintbrushJS in action: http://mezzoblue.com/paintbrushjs/demo/
+See PaintbrushJS in action: http://mezzoblue.github.com/PaintbrushJS/demo/
 Documentation: http://wiki.github.com/mezzoblue/PaintbrushJS/documentation
