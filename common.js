@@ -114,9 +114,10 @@ var getElementsByClassName = function (className, tag, elm){
 
 
 // simple check to see whether canvas is supported in this browser
-// copied and pasted from http://diveintohtml5.org/detect.html#canvas
+// copied and pasted from http://github.com/Modernizr/Modernizr
 function supports_canvas() {
-	return !!document.createElement('canvas').getContext;
+	var elem = document.createElement('canvas');
+	return !!(elem.getContext && elem.getContext('2d'));
 }
 
 
