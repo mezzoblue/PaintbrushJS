@@ -97,7 +97,7 @@ function addFilter(filterType) {
 			// we need to figure out RGB values for tint, let's do that ahead and not waste time in the loop
 			if (filterType == "filter-tint") {
 				var src  = parseInt(createColor(params.tintColor), 16),
-				    dest = getRGB(((src & 0xFF0000) >> 16), ((src & 0x00FF00) >> 8), (src & 0x0000FF)); 
+				    dest = {r: ((src & 0xFF0000) >> 16), g: ((src & 0x00FF00) >> 8), b: (src & 0x0000FF)};
 			}
 			
 			
@@ -108,7 +108,7 @@ function addFilter(filterType) {
 				var index = i * 4;
 	
 				// get each colour value of current pixel
-				var thisPixel = getRGB(data[index], data[index + 1], data[index + 2]);
+				var thisPixel = {r: data[index], g: data[index + 1], b: data[index + 2]};
 	
 				// the biggie: if we're here, let's get some filter action happening
 				pixels = applyFilters(filterType, params, pixels, index, thisPixel, dest);
@@ -130,20 +130,21 @@ function addFilter(filterType) {
 	function getReferenceImage(ref) {
 		if (ref.nodeName == "IMG") {
 			// create a reference to the image
-			var img = ref;
-		} else {
-			// otherwise check if a background image exists
-			var bg = window.getComputedStyle(ref, null).backgroundImage;
-			// if so, we're going to pull it out and create a new img element in the DOM
-			if (bg) {
-				var img = new Image();
-				// kill quotes in background image declaration, if they exist
-				bg = bg.replace(/['"]/g,'');
-				// return just the URL itself				
-				img.src = bg.slice(4, -1);
-			}
+			return ref;
+		} 
+		
+		// otherwise check if a background image exists
+		var bg = window.getComputedStyle(ref, null).backgroundImage;
+		
+		// if so, we're going to pull it out and create a new img element in the DOM
+		if (bg) {
+			var img = new Image();
+			// kill quotes in background image declaration, if they exist
+			// and return just the URL itself
+			img.src = bg.replace(/['"]/g,'').slice(4, -1);
 		}
-		return(img);
+		
+		return img;
 	}
 
 	// re-draw manipulated pixels to the reference image, regardless whether it was an img element or some other element with a background image
@@ -178,7 +179,7 @@ function addFilter(filterType) {
 			"sepiaAmount"		:	1,		// between 0 and 1
 			"tintAmount"		:	0.3,	// between 0 and 1
 			"tintColor"			:	"#FFF"	// any hex color
-		}
+		};
 		
 		// check for every attribute, throw it into the params object if it exists.
 		params = createParameter(ref.getAttribute("data-pb-blur-amount"), "blurAmount", params);
@@ -226,14 +227,6 @@ function addFilter(filterType) {
 		return(dif * dest + (1 - dif) * src);
 	}
 
-	// take three input values and return as a single object with split RGB values
-	function getRGB(rx, gx, bx) {
-		var r = rx;
-		var g = gx;
-		var b = bx;
-		return {r : r, g : g, b : b}
-	}
-
 	// throw three new RGB values into the pixels object at a specific spot
 	function setRGB(data, index, r, g, b) {
 		data[index] = r;
@@ -247,13 +240,14 @@ function addFilter(filterType) {
 	function applyFilters(filterType, params, pixels, index, thisPixel, dest) {
 
 		// speed up access
-		var data = pixels.data;
+		var data = pixels.data,
+		    val;
 
 		// figure out which filter to apply, and do it	
 		switch(filterType) {
 
 			case "filter-greyscale":
-				var val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
+				val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
 				data = setRGB(data, index, 
 					findColorDifference(params.greyscaleAmount, val, thisPixel.r),
 					findColorDifference(params.greyscaleAmount, val, thisPixel.g),
@@ -261,7 +255,7 @@ function addFilter(filterType) {
 				break;
 
 			case "filter-noise":
-				var val = noise(params.noiseAmount);
+				val = noise(params.noiseAmount);
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
 					data = setRGB(data, index, 
 						thisPixel.r + val,
@@ -295,7 +289,7 @@ function addFilter(filterType) {
 
 	// calculate random noise. different every time!
 	function noise(noiseValue) {
-		return Math.floor((Math.random() * noiseValue / 2) - noiseValue / 2)
+		return Math.floor((Math.random() * noiseValue / 2) - noiseValue / 2);
 	}
 
 }

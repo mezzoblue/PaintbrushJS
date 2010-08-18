@@ -114,10 +114,9 @@ var getElementsByClassName = function (className, tag, elm){
 
 
 // simple check to see whether canvas is supported in this browser
-// copied and pasted from http://github.com/Modernizr/Modernizr
+// copied and pasted from http://diveintohtml5.org/detect.html#canvas
 function supports_canvas() {
-	var elem = document.createElement('canvas');
-	return !!(elem.getContext && elem.getContext('2d'));
+	return !!document.createElement('canvas').getContext;
 }
 
 
@@ -127,7 +126,7 @@ function supports_canvas() {
 function gaussianBlur(img, pixels, amount) {
 
 	var width = img.width;
-	var width4 = 4 * width;
+	var width4 = width << 2;
 	var height = img.height;
 	
 	var data = pixels.data;
@@ -159,7 +158,7 @@ function gaussianBlur(img, pixels, amount) {
 		for (var y = 0; y < height; y++) {
 			// forward 
 			var index = y * width4 + c;
-			var indexLast = y * width4 + 4 * (width - 1) + c;
+			var indexLast = y * width4 + ((width - 1) << 2) + c;
 			var pixel = data[index];
 			var ppixel = pixel;
 			var pppixel = ppixel;
@@ -172,7 +171,7 @@ function gaussianBlur(img, pixels, amount) {
 				ppixel = pixel;
 			}
 			// backward
-			index = y * width4 + 4 * (width - 1) + c;
+			index = y * width4 + ((width - 1) << 2) + c;
 			indexLast = y * width4 + c;
 			pixel = data[index];
 			ppixel = pixel;
@@ -192,8 +191,8 @@ function gaussianBlur(img, pixels, amount) {
 	for (var c = 0; c < 3; c++) {
 		for (var x = 0; x < width; x++) {
 			// forward 
-			var index = 4 * x + c;
-			var indexLast = (height - 1) * width4 + 4 * x + c;
+			var index = (x << 2) + c;
+			var indexLast = (height - 1) * width4 + (x << 2) + c;
 			var pixel = data[index];
 			var ppixel = pixel;
 			var pppixel = ppixel;
@@ -206,8 +205,8 @@ function gaussianBlur(img, pixels, amount) {
 				ppixel = pixel;
 			} 
 			// backward
-			index = (height - 1) * width4 + 4 * x + c;
-			indexLast = 4 * x + c;
+			index = (height - 1) * width4 + (x << 2) + c;
+			indexLast = (x << 2) + c;
 			pixel = data[index];
 			ppixel = pixel;
 			pppixel = ppixel;
