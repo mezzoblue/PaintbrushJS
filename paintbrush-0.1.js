@@ -167,7 +167,7 @@ function addFilter(filterType) {
 			"sepiaAmount"		:	1,		// between 0 and 1
 			"tintAmount"		:	0.3,	// between 0 and 1
 			"tintColor"			:	"#FFF"	// any hex color
-		}
+		};
 		
 		// check for every attribute, throw it into the params object if it exists.
 		params = createParameter(ref.getAttribute("data-pb-blur-amount"), "blurAmount", params);
@@ -228,13 +228,14 @@ function addFilter(filterType) {
 	function applyFilters(filterType, params, pixels, index, thisPixel, dest) {
 
 		// speed up access
-		var data = pixels.data;
+		var data = pixels.data,
+		    val;
 
 		// figure out which filter to apply, and do it	
 		switch(filterType) {
 
 			case "filter-greyscale":
-				var val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
+				val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
 				data = setRGB(data, index, 
 					findColorDifference(params.greyscaleAmount, val, thisPixel.r),
 					findColorDifference(params.greyscaleAmount, val, thisPixel.g),
@@ -242,7 +243,7 @@ function addFilter(filterType) {
 				break;
 
 			case "filter-noise":
-				var val = noise(params.noiseAmount);
+				val = noise(params.noiseAmount);
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
 					data = setRGB(data, index, 
 						thisPixel.r + val,
@@ -276,7 +277,7 @@ function addFilter(filterType) {
 
 	// calculate random noise. different every time!
 	function noise(noiseValue) {
-		return Math.floor((Math.random() * noiseValue / 2) - noiseValue / 2)
+		return Math.floor((Math.random() * noiseValue / 2) - noiseValue / 2);
 	}
 
 }
