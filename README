@@ -17,3 +17,12 @@ there, before finally saving it back out to the original element.
 
 See PaintbrushJS in action: http://mezzoblue.github.com/PaintbrushJS/demo/
 Documentation: http://wiki.github.com/mezzoblue/PaintbrushJS/documentation
+
+
+KNOWN ISSUES
+
+Does not work in IE8 or lower (though IE9 should be fine), and 
+Firefox / Chrome only work when files exist on a web server. For 
+more known issues, see: 
+
+http://wiki.github.com/mezzoblue/PaintbrushJS/known-issues
