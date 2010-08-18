@@ -85,7 +85,7 @@ function addFilter(filterType) {
 			// we need to figure out RGB values for tint, let's do that ahead and not waste time in the loop
 			if (filterType == "filter-tint") {
 				var src  = parseInt(createColor(params.tintColor), 16),
-				    dest = getRGB(((src & 0xFF0000) >> 16), ((src & 0x00FF00) >> 8), (src & 0x0000FF)); 
+				    dest = {r: ((src & 0xFF0000) >> 16), g: ((src & 0x00FF00) >> 8), b: (src & 0x0000FF)};
 			}
 			
 			
@@ -96,7 +96,7 @@ function addFilter(filterType) {
 				var index = i * 4;
 	
 				// get each colour value of current pixel
-				var thisPixel = getRGB(data[index], data[index + 1], data[index + 2]);
+				var thisPixel = {r: data[index], g: data[index + 1], b: data[index + 2]};
 	
 				// the biggie: if we're here, let's get some filter action happening
 				pixels = applyFilters(filterType, params, pixels, index, thisPixel, dest);
@@ -212,14 +212,6 @@ function addFilter(filterType) {
 	// find a specified distance between two colours
 	function findColorDifference(dif, dest, src) {
 		return(dif * dest + (1 - dif) * src);
-	}
-
-	// take three input values and return as a single object with split RGB values
-	function getRGB(rx, gx, bx) {
-		var r = rx;
-		var g = gx;
-		var b = bx;
-		return {r : r, g : g, b : b}
 	}
 
 	// throw three new RGB values into the pixels object at a specific spot
