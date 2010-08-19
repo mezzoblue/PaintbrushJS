@@ -37,13 +37,28 @@ li {
 	list-style: none;
 }
 img {
-	display: block;
+	margin: 0;
+	line-height: 0;
+	vertical-align: bottom;
 }
-figcaption, p {
+figure {
+	width: 240px;
 	display: block;
 	text-align: center;
-	margin-top: 10px;
+	background: url(images/bg.png);
+}
+p {
 	color: #666;
+}
+figcaption, li p {
+	display: block;
+	text-align: center;
+	color: #666;
+	background: #fff;
+	padding-top: 10px;
+}
+.tag {
+	padding-left: 5px;
 }
 #copyright {
 	text-align: left;
