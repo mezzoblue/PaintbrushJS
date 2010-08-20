@@ -53,7 +53,8 @@ function addFilter(filterType) {
 			processFilters(filterType, img, params, current, toFilter);
 		} else {
 			// otherwise, wait till the img loads before processing
-			// (what happens if the img never loads? jury's still out)
+			//   (what happens if the img never loads? 
+			//    jury's still out, but it shouldn't be too harmful if the event never fires)
 			img.onLoad = processFilters(filterType, img, params, current, toFilter);
 		}
 
@@ -71,42 +72,45 @@ function addFilter(filterType) {
 		c.width = buffer.width = img.width;
 		c.height = buffer.height = img.height;
 
-		// create the temporary pixel array we'll be manipulating
-		var pixels = initializeBuffer(c, img);
 
-		if (pixels) {
-			//					
-			// pre-processing for various filters
-			//
-			// blur has to exist outside the main loop
-			if (filterType == "filter-blur") {
-				pixels = gaussianBlur(img, pixels, params.blurAmount);
+		if (img && c) {
+			// create the temporary pixel array we'll be manipulating
+			var pixels = initializeBuffer(c, img);
+
+			if (pixels) {
+				//					
+				// pre-processing for various filters
+				//
+				// blur has to exist outside the main loop
+				if (filterType == "filter-blur") {
+					pixels = gaussianBlur(img, pixels, params.blurAmount);
+				}
+				// we need to figure out RGB values for tint, let's do that ahead and not waste time in the loop
+				if (filterType == "filter-tint") {
+					var src  = parseInt(createColor(params.tintColor), 16),
+					    dest = {r: ((src & 0xFF0000) >> 16), g: ((src & 0x00FF00) >> 8), b: (src & 0x0000FF)};
+				}
+				
+				
+		
+				// the main loop through every pixel to apply effects
+				// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
+				for (var i = 0, data = pixels.data, length = data.length; i < length / 4; i++) {
+					var index = i * 4;
+		
+					// get each colour value of current pixel
+					var thisPixel = {r: data[index], g: data[index + 1], b: data[index + 2]};
+		
+					// the biggie: if we're here, let's get some filter action happening
+					pixels = applyFilters(filterType, params, pixels, index, thisPixel, dest);
+				}
+		
+				// redraw the pixel data back to the working buffer
+				c.putImageData(pixels, 0, 0);
+				
+				// finally, replace the original image data with the buffer
+				placeReferenceImage(toFilter[current], buffer);
 			}
-			// we need to figure out RGB values for tint, let's do that ahead and not waste time in the loop
-			if (filterType == "filter-tint") {
-				var src  = parseInt(createColor(params.tintColor), 16),
-				    dest = {r: ((src & 0xFF0000) >> 16), g: ((src & 0x00FF00) >> 8), b: (src & 0x0000FF)};
-			}
-			
-			
-	
-			// the main loop through every pixel to apply effects
-			// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
-			for (var i = 0, data = pixels.data, length = data.length; i < length / 4; i++) {
-				var index = i * 4;
-	
-				// get each colour value of current pixel
-				var thisPixel = {r: data[index], g: data[index + 1], b: data[index + 2]};
-	
-				// the biggie: if we're here, let's get some filter action happening
-				pixels = applyFilters(filterType, params, pixels, index, thisPixel, dest);
-			}
-	
-			// redraw the pixel data back to the working buffer
-			c.putImageData(pixels, 0, 0);
-			
-			// finally, replace the original image data with the buffer
-			placeReferenceImage(toFilter[current], buffer);
 		}
 	}
 
@@ -130,10 +134,11 @@ function addFilter(filterType) {
 			// kill quotes in background image declaration, if they exist
 			// and return just the URL itself
 			img.src = bg.replace(/['"]/g,'').slice(4, -1);
+			return img;
 		}
-		
-		return img;
+		return false;
 	}
+
 
 	// re-draw manipulated pixels to the reference image, regardless whether it was an img element or some other element with a background image
 	function placeReferenceImage(ref, buffer) {
@@ -150,14 +155,6 @@ function addFilter(filterType) {
 	// throw the data-* attributes into a JSON object
 	function getFilterParameters(ref) {
 
-		// check if an attribute is set, and add its value onto the filter parameters object
-		function createParameter(data, filterName, params) {
-			if (data) {
-				params[filterName] = data;
-			}
-			return params;
-		}
-
 		// create the params object and set some default parameters up front
 		var params = {
 			"blurAmount"		:	1,		// 0 and higher
@@ -170,15 +167,19 @@ function addFilter(filterType) {
 		};
 		
 		// check for every attribute, throw it into the params object if it exists.
-		params = createParameter(ref.getAttribute("data-pb-blur-amount"), "blurAmount", params);
-		params = createParameter(ref.getAttribute("data-pb-greyscale-amount"), "greyscaleAmount", params);
-		params = createParameter(ref.getAttribute("data-pb-noise-amount"), "noiseAmount", params);
-		params = createParameter(ref.getAttribute("data-pb-noise-type"), "noiseType", params);
-		params = createParameter(ref.getAttribute("data-pb-sepia-amount"), "sepiaAmount", params);
-		params = createParameter(ref.getAttribute("data-pb-tint-amount"), "tintAmount", params);
-		params = createParameter(ref.getAttribute("data-pb-tint-color"), "tintColor", params);
-			// O Canada, I got your back. (And UK, AU, NZ, IE, etc.)
-			params = createParameter(ref.getAttribute("data-pb-tint-colour"), "tintColor", params);
+		for (var filterName in params){
+			// "blurAmount" ==> "data-pb-blur-amount"
+			var hyphenated = filterName.replace(/([A-Z])/g, function(all, letter) {  
+				return '-' + letter.toLowerCase(); 
+			}),
+			attr = ref.getAttribute("data-pb-" + hyphenated);
+			if (attr) {
+				params[filterName] = attr;
+			}
+		}
+
+		// O Canada, I got your back. (And UK, AU, NZ, IE, etc.)
+		params['tintColor'] = ref.getAttribute("data-pb-tint-colour") || params['tintColor'];
 
 		return(params);
 	}
@@ -188,11 +189,23 @@ function addFilter(filterType) {
 	function initializeBuffer(c, img) {
 		// clean up the buffer between iterations
 		c.clearRect(0, 0, c.width, c.height);
-		// needed to prevent firefox from puking
+		// make sure we're drawing something
 		if (img.width > 0 && img.height > 0) {
-			// draw the image to buffer and load its pixels into an array
-			c.drawImage(img, 0, 0);
-			return(c.getImageData(0, 0, c.width, c.height));
+			try {
+				// draw the image to buffer and load its pixels into an array
+				//   (remove the last two arguments on this function if you choose not to 
+				//    respect width/height attributes and want the original image dimensions instead)
+				c.drawImage(img, 0, 0, img.width, img.height);
+				return(c.getImageData(0, 0, c.width, c.height));
+			} catch(err) {
+				// it's kinda strange, I'm explicitly checking for width/height above, but some attempts
+				// throw an INDEX_SIZE_ERR as if I'm trying to draw a 0x0 or negative image, as per 
+				// http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#images
+				//
+				// AND YET, if I simply catch the exception, the filters render anyway and all is well.
+				// there must be a reason for this, I just don't know what it is yet.
+				console.log(err);
+			}
 		}
 	}
 
