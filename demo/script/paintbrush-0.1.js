@@ -28,9 +28,11 @@ addLoadEvent(function() {
 		// you can add or remove lines here, depending on which filters you're using.
 		addFilter("filter-blur");
 		addFilter("filter-greyscale");
-		addFilter("filter-noise");
 		addFilter("filter-sepia");
 		addFilter("filter-tint");
+
+		// if noise comes last, it seems all combinations work. if it doesn't, others fail. I don't get this.
+		addFilter("filter-noise");
 	}
 
 	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
@@ -253,8 +255,7 @@ function addFilter(filterType) {
 	function applyFilters(filterType, params, pixels, index, thisPixel, dest) {
 
 		// speed up access
-		var data = pixels.data,
-		    val;
+		var data = pixels.data, val;
 
 		// figure out which filter to apply, and do it	
 		switch(filterType) {
