@@ -6,7 +6,7 @@
 
 		<script type="text/javascript" src="script/common.js"></script>
 		<script type="text/javascript" src="script/timing.js"></script>
-		<script type="text/javascript" src="script/paintbrush-0.1.js"></script>
+		<script type="text/javascript" src="script/paintbrush-0.2.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="style.css" />
 	</head>
@@ -54,6 +54,14 @@
 				</figure>
 			</li>
 		</ul>		
+		<ul>
+			<li>
+				<figure>
+					<img src="images/240-lighthouse.jpg" class="filter-posterize" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<figcaption>Posterize, default (img)</figcaption>
+				</figure>
+			</li>
+		</ul>
 
 
 		<ul class="odd">
@@ -96,7 +104,15 @@
 					<p>Noise: Amount 30, Type monochrome (CSS Background)</p>
 				</div>
 			</li>
-		</ul>		
+		</ul>
+		<ul>
+			<li>
+				<div class="bee filter-posterize"
+					data-pb-posterize-amount="10">
+					<p>Posterize: Amount 10 (CSS Background)</p>
+				</div>
+			</li>
+		</ul>
 
 		<ul class="odd">
 			<li>
@@ -150,6 +166,16 @@
 				</figure>
 			</li>
 		</ul>		
+		<ul>
+			<li>
+				<figure>
+					<img src="images/240-road.jpg" class="filter-posterize"
+						data-pb-posterize-amount="3"
+						width="240" height="160" alt="West Coast roads, New Zealand">
+					<figcaption>Posterize: Amount 3 (img)</figcaption>
+				</figure>
+			</li>
+		</ul>
 
 		<ul class="odd">
 			<li>
@@ -192,6 +218,14 @@
 				</div>
 			</li>
 		</ul>		
+		<ul>
+			<li>
+				<div class="stones filter-posterize" 
+					data-pb-posterize-amount="8">
+					<p>Posterize: Amount 8 (CSS Background)</p>
+				</div>
+			</li>
+		</ul>
 
 
 		<p id="copyright">&copy; Copyright 2010, Dave Shea. <a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS lives on GitHub.</a> <a href="http://www.opensource.org/licenses/mit-license.php">MIT Licensed.</a></p>

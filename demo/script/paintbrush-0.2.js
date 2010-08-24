@@ -1,6 +1,6 @@
 // --------------------------------------------------
 //
-// paintbrush.js, v0.1
+// paintbrush.js, v0.2
 // A browser-based image processing library for HTML5 canvas
 // Developed by Dave Shea, http://www.mezzoblue.com/
 //
@@ -17,18 +17,28 @@
 
 // basic loader function to attach all filters being used within the page
 addLoadEvent(function() {
+
+	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
+	if(!(typeof(runTimer) == 'undefined')) {
+	 	var s = startTimer();
+	}
+ 
 	// only run if this browser supports canvas, obviously
 	if (supports_canvas()) {
 		// you can add or remove lines here, depending on which filters you're using.
 		addFilter("filter-blur");
 		addFilter("filter-greyscale");
+		addFilter("filter-noise");
+		addFilter("filter-posterize");
 		addFilter("filter-sepia");
 		addFilter("filter-tint");
-
-		// if noise comes last, it seems all combinations work. if it doesn't, others fail. I don't get why.
-		// (try placing this above the others and check the torture test; sepia, tint and greyscale fail.)
-		addFilter("filter-noise");
 	}
+
+	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
+	if(!(typeof(runTimer) == 'undefined')) {
+		endTimer(s);
+	}
+
 });
 
 
@@ -85,7 +95,6 @@ function addFilter(filterType) {
 					var src  = parseInt(createColor(params.tintColor), 16),
 					    dest = {r: ((src & 0xFF0000) >> 16), g: ((src & 0x00FF00) >> 8), b: (src & 0x0000FF)};
 				}
-				
 				
 		
 				// the main loop through every pixel to apply effects
@@ -155,6 +164,7 @@ function addFilter(filterType) {
 			"greyscaleAmount"	:	1,		// between 0 and 1
 			"noiseAmount"		:	30,		// 0 and higher
 			"noiseType"			:	"mono",	// mono or color
+			"posterizeAmount"	:	5,		// 0 - 255, though 0 and 1 are relatively useless
 			"sepiaAmount"		:	1,		// between 0 and 1
 			"tintAmount"		:	0.3,	// between 0 and 1
 			"tintColor"			:	"#FFF"	// any hex color
@@ -174,6 +184,10 @@ function addFilter(filterType) {
 
 		// O Canada, I got your back. (And UK, AU, NZ, IE, etc.)
 		params['tintColor'] = ref.getAttribute("data-pb-tint-colour") || params['tintColor'];
+
+		// Posterize requires a couple more generated values, lets keep them out of the loop
+		params['posterizeAreas'] = 256 / params.posterizeAmount;
+		params['posterizeValues'] = 255 / (params.posterizeAmount - 1);
 
 		return(params);
 	}
@@ -259,32 +273,41 @@ function addFilter(filterType) {
 
 			case "filter-noise":
 				val = noise(params.noiseAmount);
+
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
 					data = setRGB(data, index, 
-						thisPixel.r + val,
-						thisPixel.g + val,
-						thisPixel.b + val);
+						checkRGBBoundary(thisPixel.r + val),
+						checkRGBBoundary(thisPixel.g + val),
+						checkRGBBoundary(thisPixel.b + val));
 				} else {
 					data = setRGB(data, index, 
-						thisPixel.r + noise(params.noiseAmount),
-						thisPixel.g + noise(params.noiseAmount),
-						thisPixel.b + noise(params.noiseAmount));
+						checkRGBBoundary(thisPixel.r + noise(params.noiseAmount)),
+						checkRGBBoundary(thisPixel.g + noise(params.noiseAmount)),
+						checkRGBBoundary(thisPixel.b + noise(params.noiseAmount)));
 				}
 				break;
-				
-			case "filter-tint":
+
+			case "filter-posterize":
 				data = setRGB(data, index, 
-					findColorDifference(params.tintAmount, dest.r, thisPixel.r),
-					findColorDifference(params.tintAmount, dest.g, thisPixel.g),
-					findColorDifference(params.tintAmount, dest.b, thisPixel.b));
+					parseInt(params.posterizeValues * parseInt(thisPixel.r / params.posterizeAreas)),
+					parseInt(params.posterizeValues * parseInt(thisPixel.g / params.posterizeAreas)),
+					parseInt(params.posterizeValues * parseInt(thisPixel.b / params.posterizeAreas)));
 				break;
-				
+
 			case "filter-sepia":
 				data = setRGB(data, index, 
 					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
 					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
 					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
 				break;
+
+			case "filter-tint":
+				data = setRGB(data, index, 
+					findColorDifference(params.tintAmount, dest.r, thisPixel.r),
+					findColorDifference(params.tintAmount, dest.g, thisPixel.g),
+					findColorDifference(params.tintAmount, dest.b, thisPixel.b));
+				break;
+
 		}
 		return(pixels);
 	}
@@ -292,7 +315,18 @@ function addFilter(filterType) {
 
 	// calculate random noise. different every time!
 	function noise(noiseValue) {
-		return Math.floor((Math.random() * noiseValue / 2) - noiseValue / 2);
+		return Math.floor(noiseValue / 2 - (Math.random() * noiseValue));
+	}
+	
+	// ensure an RGB value isn't negative / over 255
+	function checkRGBBoundary(val) {
+		if (val < 0) {
+			return 0;
+		} else if (val > 255) {
+			return 255;
+		} else {
+			return val;
+		}
 	}
 
 }
