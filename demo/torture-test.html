@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+	<head>
+		<title>PaintbrushJS Torture Test</title>
+		<meta charset="utf-8" />
+
+		<script type="text/javascript" src="script/common.js"></script>
+		<script type="text/javascript" src="script/timing.js"></script>
+		<script type="text/javascript" src="script/paintbrush-0.2.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+	<body>
+		
+		<h1>PaintbrushJS Torture Test</h1>
+		<p class="tag">Let try and break Paintbrush in fun and creative ways.</p>
+
+
+		<h2>Multiple Filters</h2>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-sepia filter-tint" data-pb-tint-colour="#00f" data-pb-tint-amount="0.15" width="120" height="80" alt="torture">
+					<figcaption>sepia + tint</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-blur filter-noise" data-pb-noise-amount="50" width="120" height="80" alt="torture">
+					<figcaption>blur + noise</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-tint filter-noise filter-greyscale" data-pb-noise-amount="50" data-pb-tint-colour="#0f0" data-pb-tint-amount="0.1" width="120" height="80" alt="torture">
+					<figcaption>greyscale + noise + tint</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-blur filter-tint" data-pb-tint-colour="#06f" data-pb-tint-amount="0.35" data-pb-blur-amount="2" width="120" height="80" alt="torture">
+					<figcaption>blur + tint</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-sepia filter-blur" data-pb-blur-amount="1" width="120" height="80" alt="torture">
+					<figcaption>sepia + blur</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-tint filter-blur filter-greyscale" data-pb-blur-amount="5" data-pb-tint-colour="#0f0" data-pb-tint-amount="0.15" width="120" height="80" alt="torture">
+					<figcaption>greyscale + blur + tint</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-greyscale filter-noise" data-pb-noise-amount="50" width="120" height="80" alt="torture">
+					<figcaption>greyscale + noise</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-sepia filter-noise" data-pb-noise-amount="50" width="120" height="80" alt="torture">
+					<figcaption>sepia + noise</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-tint filter-noise" data-pb-noise-amount="50" data-pb-tint-colour="#0ff" data-pb-tint-amount="0.2" width="120" height="80" alt="torture">
+					<figcaption>tint + noise</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-greyscale filter-noise filter-blur" data-pb-noise-amount="50" data-pb-blur-amount="2" width="120" height="80" alt="torture">
+					<figcaption>greyscale + noise + blur</figcaption>
+				</figure>
+			</li>
+		</ul>
+		
+
+		<h2>Transparency Test</h2>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" width="120" height="80" alt="torture">
+					<figcaption>Transparent PNG (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-sepia" width="120" height="80" alt="torture">
+					<figcaption>sepia</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-greyscale" width="120" height="80" alt="torture">
+					<figcaption>greyscale</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-tint" data-pb-tint-colour="#0099ff" data-pb-tint-amount="0.7" width="120" height="80" alt="torture">
+					<figcaption>tint</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-blur" data-pb-blur-amount="2" width="120" height="80" alt="torture">
+					<figcaption>blur</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-noise" data-pb-noise-amount="70" width="120" height="80" alt="torture">
+					<figcaption>noise</figcaption>
+				</figure>
+			</li>
+		</ul>
+
+
+
+		<h2>Transparency + image stretching test</h2>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-dots.png" width="120" height="80" alt="torture">
+					<figcaption>Transparent PNG (img)</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-dots.png" class="filter-sepia" width="120" height="80" alt="torture">
+					<figcaption>sepia</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-dots.png" class="filter-greyscale" width="120" height="80" alt="torture">
+					<figcaption>greyscale</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-dots.png" class="filter-tint" data-pb-tint-colour="#0099ff" data-pb-tint-amount="0.7" width="120" height="160" alt="torture">
+					<figcaption>stretched + tint</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-dots.png" class="filter-blur" data-pb-blur-amount="2" width="120" height="160" alt="torture">
+					<figcaption>stretched + blur</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-dots.png" class="filter-noise" data-pb-noise-amount="70" width="120" height="160" alt="torture">
+					<figcaption>stretched + noise</figcaption>
+				</figure>
+			</li>
+		</ul>
+
+
+		<h2>Broken Image References</h2>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/wakkawakka.png" class="filter-greyscale" width="120" height="80" alt="wakka wakka">
+					<figcaption>Broken img reference + greyscale</figcaption>
+				</figure>
+			</li>
+			<li>
+				<div class="loopdiloopdiloo filter-greyscale"
+					data-pb-greyscale-amount="0.5">
+					<p>No background image + greyscale</p>
+				</div>
+			</li>
+			<li>
+				<div class="loopdiloopdiloo filter-greyscale"
+					data-pb-greyscale-amount="0.5">
+					<img src="images/wakkawakka.png" class="filter-greyscale" width="120" height="80" alt="wakka wakka">
+					<p>Broken img reference + No background image + greyscale</p>
+				</div>
+			</li>
+		</ul>
+
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-greyscale" width="120" height="80" alt="torture">
+					<figcaption>one more filter after the brokenness to see if it'll still get applied</figcaption>
+				</figure>
+			</li>
+		</ul>
+
+
+		<h2>Image Squishing</h2>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/1024-sign.jpg" width="240" height="160" class="filter-tint" data-pb-tint-amount="0.5" data-pb-tint-colour="#009900" alt="torture">
+					<figcaption>1024x683 squished + blur</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/1024-sign.jpg" width="1024" height="683" class="filter-blur" data-pb-blur-amount="10" alt="torture">
+					<figcaption>1024x683 squished + blur</figcaption>
+				</figure>
+			</li>
+		</ul>
+
+
+
+<ul>
+			<li>
+				<figure>
+					<img src="images/1024-sign.jpg" width="1024" height="683" class="filter-blur" data-pb-blur-amount="889" alt="torture">
+					<figcaption>1024x683 ultra-blur</figcaption>
+				</figure>
+			</li>
+		</ul>
+
+
+		<p id="copyright">&copy; Copyright 2010, Dave Shea. <a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS lives on GitHub.</a> <a href="http://www.opensource.org/licenses/mit-license.php">MIT Licensed.</a></p>
+
+	</body>
+</html>
