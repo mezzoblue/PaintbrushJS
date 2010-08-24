@@ -31,7 +31,8 @@ addLoadEvent(function() {
 		addFilter("filter-sepia");
 		addFilter("filter-tint");
 
-		// if noise comes last, it seems all combinations work. if it doesn't, others fail. I don't get this.
+		// if noise comes last, it seems all combinations work. if it doesn't, others fail. I don't get why.
+		// (try placing this above the others and check the torture test; sepia, tint and greyscale fail.)
 		addFilter("filter-noise");
 	}
 
@@ -215,9 +216,9 @@ function addFilter(filterType) {
 				// there must be a reason for this, I just don't know what it is yet.
 				//
 				// we also seem to get to this point when attempting to apply multiple filters on the same image
-				// 	(specifically: noise)
+				// 	(specifically: noise before anything else, if it goes after, all is well?!)
 				//
-				console.log(err);
+				console.log("exception: " + err);
 			}
 		}
 
