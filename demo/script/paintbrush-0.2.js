@@ -200,7 +200,7 @@ function addFilter(filterType) {
 		// make sure we're drawing something
 		if (img.width > 0 && img.height > 0) {
 
-			console.log(img.width, img.height, c.width, c.height);
+			// console.log(img.width, img.height, c.width, c.height);
 
 			try {
 				// draw the image to buffer and load its pixels into an array
@@ -220,7 +220,7 @@ function addFilter(filterType) {
 				// we also seem to get to this point when attempting to apply multiple filters on the same image
 				// 	(specifically: noise before anything else, if it goes after, all is well?!)
 				//
-				console.log("exception: " + err);
+				// console.log("exception: " + err);
 			}
 		}
 
