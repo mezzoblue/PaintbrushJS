@@ -15,6 +15,70 @@
 		<h1>PaintbrushJS Torture Test</h1>
 		<p class="tag">Let try and break Paintbrush in fun and creative ways.</p>
 
+
+		<h2>Multiple Filters</h2>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-sepia filter-tint" data-pb-tint-colour="#00f" data-pb-tint-amount="0.15" width="120" height="80" alt="torture">
+					<figcaption>sepia + tint</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-blur filter-noise" data-pb-noise-amount="50" width="120" height="80" alt="torture">
+					<figcaption>blur + noise</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-tint filter-noise filter-greyscale" data-pb-noise-amount="50" data-pb-tint-colour="#0f0" data-pb-tint-amount="0.2" width="120" height="80" alt="torture">
+					<figcaption>greyscale + noise + tint</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-blur filter-tint" data-pb-tint-colour="#06f" data-pb-tint-amount="0.35" data-pb-blur-amount="2" width="120" height="80" alt="torture">
+					<figcaption>blur + tint</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-sepia filter-blur" data-pb-blur-amount="1" width="120" height="80" alt="torture">
+					<figcaption>sepia + blur</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-tint filter-blur filter-greyscale" data-pb-blur-amount="5" data-pb-tint-colour="#0f0" data-pb-tint-amount="0.08" width="120" height="80" alt="torture">
+					<figcaption>greyscale + blur + tint</figcaption>
+				</figure>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-greyscale filter-noise" data-pb-noise-amount="50" width="120" height="80" alt="torture">
+					<figcaption>greyscale + noise</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-sepia filter-noise" data-pb-noise-amount="50" width="120" height="80" alt="torture">
+					<figcaption>sepia + noise</figcaption>
+				</figure>
+			</li>
+			<li>
+				<figure>
+					<img src="images/120-circles.png" class="filter-tint filter-noise" data-pb-noise-amount="50" data-pb-tint-colour="#0ff" data-pb-tint-amount="0.08" width="120" height="80" alt="torture">
+					<figcaption>tint + noise</figcaption>
+				</figure>
+			</li>
+		</ul>
+
+		<h2>Transparency Test</h2>
 		<ul>
 			<li>
 				<figure>
@@ -57,6 +121,8 @@
 		</ul>
 
 
+
+		<h2>Transparency + image stretching test</h2>
 		<ul>
 			<li>
 				<figure>
@@ -99,6 +165,7 @@
 		</ul>
 
 
+		<h2>Broken Image References</h2>
 		<ul>
 			<li>
 				<figure>
@@ -124,12 +191,14 @@
 		<ul>
 			<li>
 				<figure>
-					<img src="images/120-circles.png" class="filter-tint" data-pb-tint-colour="#0099ff" data-pb-tint-amount="0.7" width="120" height="80" alt="torture">
+					<img src="images/120-circles.png" class="filter-greyscale" width="120" height="80" alt="torture">
 					<figcaption>one more filter after the brokenness to see if it'll still get applied</figcaption>
 				</figure>
 			</li>
 		</ul>
 
+
+		<h2>Image Squishing</h2>
 		<ul>
 			<li>
 				<figure>

@@ -61,15 +61,7 @@ function addFilter(filterType) {
 		var img = getReferenceImage(toFilter[current]);
 
 		// make sure we've actually got something to work with
-		if (img.width) {
-			processFilters(filterType, img, params, current, toFilter);
-		} else {
-			// otherwise, wait till the img loads before processing
-			//   (what happens if the img never loads? 
-			//    jury's still out, but it shouldn't be too harmful if the event never fires)
-			img.onLoad = processFilters(filterType, img, params, current, toFilter);
-		}
-
+		img.onLoad = processFilters(filterType, img, params, current, toFilter);
 	}
 
 
@@ -202,12 +194,16 @@ function addFilter(filterType) {
 		c.clearRect(0, 0, c.width, c.height);
 		// make sure we're drawing something
 		if (img.width > 0 && img.height > 0) {
+
+			console.log(img.width, img.height, c.width, c.height);
+
 			try {
 				// draw the image to buffer and load its pixels into an array
 				//   (remove the last two arguments on this function if you choose not to 
 				//    respect width/height attributes and want the original image dimensions instead)
-				c.drawImage(img, 0, 0, img.width, img.height);
+				c.drawImage(img, 0, 0, img.width , img.height);
 				return(c.getImageData(0, 0, c.width, c.height));
+
 			} catch(err) {
 				// it's kinda strange, I'm explicitly checking for width/height above, but some attempts
 				// throw an INDEX_SIZE_ERR as if I'm trying to draw a 0x0 or negative image, as per 
@@ -215,9 +211,14 @@ function addFilter(filterType) {
 				//
 				// AND YET, if I simply catch the exception, the filters render anyway and all is well.
 				// there must be a reason for this, I just don't know what it is yet.
+				//
+				// we also seem to get to this point when attempting to apply multiple filters on the same image
+				// 	(specifically: noise)
+				//
 				console.log(err);
 			}
 		}
+
 	}
 
 
