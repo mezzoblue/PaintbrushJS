@@ -28,6 +28,7 @@ addLoadEvent(function() {
 		// you can add or remove lines here, depending on which filters you're using.
 		addFilter("filter-blur");
 		addFilter("filter-greyscale");
+		addFilter("filter-mosaic");
 		addFilter("filter-noise");
 		addFilter("filter-posterize");
 		addFilter("filter-sepia");
@@ -99,14 +100,14 @@ function addFilter(filterType) {
 		
 				// the main loop through every pixel to apply effects
 				// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
-				for (var i = 0, data = pixels.data, length = data.length; i < length / 4; i++) {
-					var index = i * 4;
+				for (var i = 0, data = pixels.data, length = data.length; i < length >> 2; i++) {
+					var index = i << 2;
 		
 					// get each colour value of current pixel
 					var thisPixel = {r: data[index], g: data[index + 1], b: data[index + 2]};
 		
 					// the biggie: if we're here, let's get some filter action happening
-					pixels = applyFilters(filterType, params, pixels, index, thisPixel, dest);
+					pixels = applyFilters(filterType, params, img, pixels, index, thisPixel, dest);
 				}
 		
 				// redraw the pixel data back to the working buffer
@@ -162,6 +163,8 @@ function addFilter(filterType) {
 		var params = {
 			"blurAmount"		:	1,		// 0 and higher
 			"greyscaleAmount"	:	1,		// between 0 and 1
+			"mosaicAmount"		:	1,		// between 0 and 1
+			"mosaicSize"		:	5,		// 1 and higher
 			"noiseAmount"		:	30,		// 0 and higher
 			"noiseType"			:	"mono",	// mono or color
 			"posterizeAmount"	:	5,		// 0 - 255, though 0 and 1 are relatively useless
@@ -217,9 +220,6 @@ function addFilter(filterType) {
 				// AND YET, if I simply catch the exception, the filters render anyway and all is well.
 				// there must be a reason for this, I just don't know what it is yet.
 				//
-				// we also seem to get to this point when attempting to apply multiple filters on the same image
-				// 	(specifically: noise before anything else, if it goes after, all is well?!)
-				//
 				// console.log("exception: " + err);
 			}
 		}
@@ -255,7 +255,7 @@ function addFilter(filterType) {
 	
 
 	// the function that actually manipulates the pixels
-	function applyFilters(filterType, params, pixels, index, thisPixel, dest) {
+	function applyFilters(filterType, params, img, pixels, index, thisPixel, dest) {
 
 		// speed up access
 		var data = pixels.data, val;
@@ -269,6 +269,16 @@ function addFilter(filterType) {
 					findColorDifference(params.greyscaleAmount, val, thisPixel.r),
 					findColorDifference(params.greyscaleAmount, val, thisPixel.g),
 					findColorDifference(params.greyscaleAmount, val, thisPixel.b));
+				break;
+
+			case "filter-mosaic":
+				var stepX = ((index >> 2) % params.mosaicSize) << 2;
+				var stepY = (Math.floor(((index >> 2) / img.width)) % params.mosaicSize) << 2;
+				var pos = index - stepX - img.width * stepY;
+				data = setRGB(data, index,
+					findColorDifference(params.mosaicAmount, data[pos], thisPixel.r),
+					findColorDifference(params.mosaicAmount, data[pos + 1], thisPixel.g),
+					findColorDifference(params.mosaicAmount, data[pos + 2], thisPixel.b));
 				break;
 
 			case "filter-noise":
