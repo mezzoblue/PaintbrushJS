@@ -33,6 +33,9 @@ addLoadEvent(function() {
 		addFilter("filter-posterize");
 		addFilter("filter-sepia");
 		addFilter("filter-tint");
+
+		// early experimental phase
+		addFilter("filter-matrix");
 	}
 
 	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
@@ -87,10 +90,15 @@ function addFilter(filterType) {
 				//					
 				// pre-processing for various filters
 				//
-				// blur has to exist outside the main loop
+				// blur and matrix filters have to exist outside the main loop
 				if (filterType == "filter-blur") {
 					pixels = gaussianBlur(img, pixels, params.blurAmount);
 				}
+				if (filterType == "filter-matrix") {
+					pixels = applyMatrix(img, pixels, params);
+				}
+
+
 				// we need to figure out RGB values for tint, let's do that ahead and not waste time in the loop
 				if (filterType == "filter-tint") {
 					var src  = parseInt(createColor(params.tintColor), 16),
@@ -98,16 +106,19 @@ function addFilter(filterType) {
 				}
 				
 		
-				// the main loop through every pixel to apply effects
-				// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
-				for (var i = 0, data = pixels.data, length = data.length; i < length >> 2; i++) {
-					var index = i << 2;
-		
-					// get each colour value of current pixel
-					var thisPixel = {r: data[index], g: data[index + 1], b: data[index + 2]};
-		
-					// the biggie: if we're here, let's get some filter action happening
-					pixels = applyFilters(filterType, params, img, pixels, index, thisPixel, dest);
+				
+				if (filterType != "filter-blur") {
+					// the main loop through every pixel to apply effects
+					// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
+					for (var i = 0, data = pixels.data, length = data.length; i < length >> 2; i++) {
+						var index = i << 2;
+			
+						// get each colour value of current pixel
+						var thisPixel = {r: data[index], g: data[index + 1], b: data[index + 2]};
+			
+						// the biggie: if we're here, let's get some filter action happening
+						pixels = applyFilters(filterType, params, img, pixels, index, thisPixel, dest);
+					}
 				}
 		
 				// redraw the pixel data back to the working buffer
@@ -170,7 +181,9 @@ function addFilter(filterType) {
 			"posterizeAmount"	:	5,		// 0 - 255, though 0 and 1 are relatively useless
 			"sepiaAmount"		:	1,		// between 0 and 1
 			"tintAmount"		:	0.3,	// between 0 and 1
-			"tintColor"			:	"#FFF"	// any hex color
+			"tintColor"			:	"#FFF",	// any hex color
+
+			"matrixAmount"		:	0.2		// between 0 and 1
 		};
 		
 		// check for every attribute, throw it into the params object if it exists.
@@ -318,9 +331,116 @@ function addFilter(filterType) {
 					findColorDifference(params.tintAmount, dest.b, thisPixel.b));
 				break;
 
+
 		}
 		return(pixels);
 	}
+
+
+
+	function applyMatrix(img, pixels, params) {
+
+		// -------------
+		// been leaning on this a lot:
+		// http://forum.processing.org/topic/controlled-blur-or-edge-detect-effect-using-convolution-kernel
+		// -------------
+
+		// speed up access
+		var data = pixels.data, imgWidth = img.width;
+
+		// 3x3 matrix can be any combination of digits, though to maintain brightness they should add up to 1
+		// (-1 x 8 + 9 = 1)
+		var matrix = [
+			-1,		-1,		-1,
+			-1,		9,		-1,
+			-1,		-1,		-1
+
+/*
+			0,		-1,		0,
+			-1,		5,		-1,
+			0,		-1,		0
+*/
+
+/*
+			0.111,		0.111,		0.111,
+			0.111,		0.111,		0.111,
+			0.111,		0.111,		0.111
+*/
+
+		];
+		
+		// though theoretically we're also going to account for non-1 arrays
+		matrix = normalizeMatrix(matrix);
+
+		// calculate the dimensions, just in case this ever expands to 5 and beyond
+		var matrixSize = Math.sqrt(matrix.length);
+		
+		// loop through every pixel
+		for (var i = 1; i < imgWidth - 1; i++) {
+			for (var j = 1; j < img.height - 1; j++) {
+
+				// temporary holders for matrix results
+				var sumR = sumG = sumB = 0;
+
+				// loop through the matrix itself
+				for (var h = 0; h < matrixSize; h++) {
+					for (var w = 0; w < matrixSize; w++) {
+
+						// get a refence to a pixel position in the matrix
+						var r = convertCoordinates(i + h - 1, j + w - 1, imgWidth) << 2;
+
+						// find RGB values for that pixel
+						var currentPixel = {
+							r: data[r],
+							g: data[r + 1],
+							b: data[r + 2]
+						};
+
+						// apply the value from the current matrix position
+						sumR += currentPixel.r * matrix[w + h];
+						sumG += currentPixel.g * matrix[w + h];
+						sumB += currentPixel.b * matrix[w + h];
+					}
+				}
+      				
+				// get a reference for the final pixel
+				var ref = convertCoordinates(i, j, imgWidth) << 2;
+				var thisPixel = {
+							r: data[ref],
+							g: data[ref + 1],
+							b: data[ref + 2]
+						};
+				
+				// finally, apply the adjusted values
+				data = setRGB(data, ref, 
+					findColorDifference(params.matrixAmount, sumR, thisPixel.r),
+					findColorDifference(params.matrixAmount, sumG, thisPixel.g),
+					findColorDifference(params.matrixAmount, sumB, thisPixel.b));
+			}
+		}
+
+		return(pixels);
+	}
+
+
+	// convert x/y coordinates to pixel index reference
+	function convertCoordinates(x, y, w) {
+		return x + (y * w);
+	}
+
+	// ensure that values in the matrix add up to 1
+	function normalizeMatrix(matrix) {
+		var j = 0;
+		for (var i = 0; i < matrix.length; i++) {
+			j += matrix[i];
+		}
+		for (var i = 0; i < matrix.length; i++) {
+			matrix[i] /= j;
+		}
+		return matrix;
+	}
+
+
 
 
 	// calculate random noise. different every time!
