@@ -397,11 +397,13 @@ function addFilter(filterType) {
 						};
 
 						// apply the value from the current matrix position
-						sumR += currentPixel.r * matrix[w + h];
-						sumG += currentPixel.g * matrix[w + h];
-						sumB += currentPixel.b * matrix[w + h];
+						sumR += currentPixel.r * matrix[w + h * matrixSize];
+						sumG += currentPixel.g * matrix[w + h * matrixSize];
+						sumB += currentPixel.b * matrix[w + h * matrixSize];
 					}
 				}
+				
+
       				
 				// get a reference for the final pixel
 				var ref = convertCoordinates(i, j, imgWidth) << 2;
