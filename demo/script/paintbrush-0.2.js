@@ -15,7 +15,7 @@
 
 
 
-// basic loader function to attach all filters being used within the page
+// basic loader function to attach all class-defined filters being used within the page
 addLoadEvent(function() {
 
 	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
@@ -23,6 +23,20 @@ addLoadEvent(function() {
 	 	var s = startTimer();
 	}
  
+	processFilters();
+
+	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
+	if(!(typeof(runTimer) == 'undefined')) {
+		endTimer(s);
+	}
+
+});
+
+
+
+// function to process all filters
+// (exists outside of loader to enable standalone use)
+function processFilters() {
 	// only run if this browser supports canvas, obviously
 	if (supports_canvas()) {
 		// you can add or remove lines here, depending on which filters you're using.
@@ -37,16 +51,7 @@ addLoadEvent(function() {
 		// early experimental phase
 		addFilter("filter-matrix");
 	}
-
-	// only use this if you're going to time the script, otherwise you can safely delete the next three lines
-	if(!(typeof(runTimer) == 'undefined')) {
-		endTimer(s);
-	}
-
-});
-
-
-
+}
 
 
 // the main workhorse function
@@ -54,7 +59,7 @@ function addFilter(filterType) {
 
 	
 	// get every element with the specified filter class
-	var toFilter = getElementsByClassName(filterType);
+	var toFilter = getElementsByClassName(filterType.toLowerCase());
 
 	// now let's loop through those elements
 	for(var current in toFilter) {
@@ -66,11 +71,17 @@ function addFilter(filterType) {
 		var img = getReferenceImage(toFilter[current]);
 
 		// make sure we've actually got something to work with
-		img.onLoad = processFilters(filterType, img, params, toFilter[current]);
+		img.onLoad = processFilters(filterType, img, params, toFilter, current);
 	}
 
 
-	function processFilters(filterType, img, params, toFilter) {
+	function processFilters(filterType, img, params, toFilter, current) {
+
+		// quick access to original element
+		var ref = toFilter[current];
+		
+		// original image copy naming convention
+		var originalSuffix = filterType + "-" + current;
 
 		// create working buffer
 		var buffer = document.createElement("canvas");
@@ -124,47 +135,25 @@ function addFilter(filterType) {
 				// redraw the pixel data back to the working buffer
 				c.putImageData(pixels, 0, 0);
 				
-				// finally, replace the original image data with the buffer
-				placeReferenceImage(toFilter, buffer, img);
+
+				// store the original image in the DOM
+				var stashed = stashOriginal(img, originalSuffix);
+
+				// then replace the original image data with the buffer
+				placeReferenceImage(ref, buffer.toDataURL("image/png"), img);
+				
+				// and finally, add a class that references the stashed original image for later use
+				// (but only if we actually stashed one above)
+				if (stashed) {
+					ref.className += " pb-ref-" + originalSuffix;
+				}
+			
 			}
 		}
 	}
 
 
 
-
-
-	// sniff whether this is an actual img element, or some other element with a background image
-	function getReferenceImage(ref) {
-		if (ref.nodeName == "IMG") {
-			// create a reference to the image
-			return ref;
-		} 
-		
-		// otherwise check if a background image exists
-		var bg = window.getComputedStyle(ref, null).backgroundImage;
-		
-		// if so, we're going to pull it out and create a new img element in the DOM
-		if (bg) {
-			var img = new Image();
-			// kill quotes in background image declaration, if they exist
-			// and return just the URL itself
-			img.src = bg.replace(/['"]/g,'').slice(4, -1);
-			return img;
-		}
-		return false;
-	}
-
-	// re-draw manipulated pixels to the reference image, regardless whether it was an img element or some other element with a background image
-	function placeReferenceImage(ref, buffer, img) {
-		// dump the buffer as a DataURL
-		result = buffer.toDataURL("image/png");
-		if (ref.nodeName == "IMG") {
-			img.src = result;
-		} else {
-			ref.style.backgroundImage = "url(" + result + ")";
-		}
-	}
 
 
 	// throw the data-* attributes into a JSON object
@@ -240,6 +229,31 @@ function addFilter(filterType) {
 	}
 
 
+
+	// stash a copy of the original image in the DOM for later use
+	function stashOriginal(img, originalSuffix) {
+		
+		var orig = "pb-original-" + originalSuffix;
+
+		// make sure we're not re-adding on repeat calls
+		if (!document.getElementById(orig)) {
+
+			// create the stashed img element
+			var original = document.createElement("img");
+	
+			// set the attributes
+			original.src = img.src;
+			original.id = orig;
+	
+			// for testing only
+			original.style.display = "none";
+			document.body.appendChild(original);
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 
 	// parse a shorthand or longhand hex string, with or without the leading '#', into something usable
@@ -447,7 +461,7 @@ function addFilter(filterType) {
 
 	// calculate random noise. different every time!
 	function noise(noiseValue) {
-		return Math.floor(noiseValue / 2 - (Math.random() * noiseValue));
+		return Math.floor((noiseValue >> 1) - (Math.random() * noiseValue));
 	}
 	
 	// ensure an RGB value isn't negative / over 255
@@ -461,4 +475,54 @@ function addFilter(filterType) {
 		}
 	}
 
+}
+
+
+// sniff whether this is an actual img element, or some other element with a background image
+function getReferenceImage(ref) {
+	if (ref.nodeName == "IMG") {
+		// create a reference to the image
+		return ref;
+	} 
+	
+	// otherwise check if a background image exists
+	var bg = window.getComputedStyle(ref, null).backgroundImage;
+	
+	// if so, we're going to pull it out and create a new img element in the DOM
+	if (bg) {
+		var img = new Image();
+		// kill quotes in background image declaration, if they exist
+		// and return just the URL itself
+		img.src = bg.replace(/['"]/g,'').slice(4, -1);
+		return img;
+	}
+	return false;
+}
+
+// re-draw manipulated pixels to the reference image, regardless whether it was an img element or some other element with a background image
+function placeReferenceImage(ref, result, img) {
+	// dump the buffer as a DataURL
+	if (ref.nodeName == "IMG") {
+		img.src = result;
+	} else {
+		ref.style.backgroundImage = "url(" + result + ")";
+	}
+}
+	
+// add specified attribute name with specified value to passed object
+function addAttribute(obj, name, value) {
+	var newAttr = document.createAttribute(name);
+	newAttr.nodeValue = value;
+	return obj.setAttributeNode(newAttr);
+}
+
+
+// clear reference object's data-pb-* attributes
+function flushDataAttributes(img) {
+	for (var i = 0; i < img.attributes.length; i++) {
+		var thisAttr = img.attributes[i].name;
+		if (thisAttr.substr(0, 8) == "data-pb-") {
+			img.removeAttribute(thisAttr);
+		}
+	}
 }

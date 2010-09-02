@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+	<head>
+		<title>PaintbrushJS Real-time Manipulation Page</title>
+		<meta charset="utf-8" />
+
+		<script type="text/javascript" src="script/common.js"></script>
+		<script type="text/javascript" src="script/paintbrush-0.2.js"></script>
+		<script type="text/javascript">
+		
+// testing realtime manipulation
+addLoadEvent(function() {
+
+
+	// get our two main interaction objects, the form and the image
+	var thisForm = [	
+		document.getElementById("interaction-blur"),
+		document.getElementById("interaction-mosaic"),
+		document.getElementById("interaction-noise"),
+		document.getElementById("interaction-tint")
+	];
+
+	var img = [
+		document.getElementById("filter-blur-target"),
+		document.getElementById("filter-mosaic-target"),
+		document.getElementById("filter-noise-target"),
+		document.getElementById("filter-tint-target")
+	];
+
+
+	// initial filter application
+	updateFilters(img, thisForm);
+
+
+	for (var i = 0; i < thisForm.length; i++) {
+
+		// when the form is submitted...
+		thisForm[i].onsubmit = function() {
+			updateFilters(img, thisForm);
+			return false;
+		};
+
+		// also add a hook for range sliders
+		inputs = thisForm[i].getElementsByTagName("input");
+		for (var j = 0; j < inputs.length; j++) {
+			if (inputs[j].type.toLowerCase() == "range") {
+				inputs[j].onchange = function() {
+					updateFilters(img, thisForm);
+				}
+			}
+		}
+	}
+
+});
+
+
+
+function updateFilters(img, thisForm) {
+
+	for (var i = 0; i < img.length; i++) {
+
+		// first, does the reference object have an original image in the DOM?
+		var classList = (img[i].className.toLowerCase()).split(' ');
+		for (var j = 0; j < classList.length; j++) {
+		
+			// quick reference
+			var currentClass = classList[j];
+	
+			// okay, we're good, there's an original
+			if (currentClass.substr(0, 7) == "pb-ref-") {
+	
+				// go fetch it and update the reference object source
+				var original = document.getElementById("pb-original-" + currentClass.substr(7, currentClass.length - 7));
+				placeReferenceImage(img[i], original.src, img[i]);
+	
+				// clear reference object's data-pb-* attributes
+				flushDataAttributes(img[i]);
+	
+				// get all inputs in the form
+				inputs = thisForm[i].getElementsByTagName("input");
+		
+				// loop through the inputs, grabbing the names and values and 
+				// setting them as attributes on the reference object
+				for (var k = 0; k < inputs.length; k++) {
+					addAttribute(img[i], inputs[k].name, inputs[k].value);
+				}
+	
+				// finally, apply the updated filters
+				processFilters();
+	
+			}
+		}
+	}
+}
+
+		</script>
+
+		<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+	<body>
+		
+		<h1><a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS</a> Real-time Manipulation Page</h1>
+		
+
+		<ul>
+			<li>
+				<div id="filter-blur-target" class="stones filter-blur"></div>
+			</li>
+			<li>
+				<form action="#" id="interaction-blur">
+				<h3>Gaussian Blur</h3>
+					<label>
+						Amount:
+						<input type="range" name="data-pb-blur-amount" min="0" max="10" step="0.1" value="1">
+					</label>
+					
+					<button type="submit">Apply</button>
+				</form>		
+			</li>
+			<li>
+				<div id="filter-mosaic-target" class="stones filter-mosaic"></div>
+			</li>
+			<li>
+				<form action="#" id="interaction-mosaic">
+				<h3>Mosaic</h3>
+					<label>
+						Amount:
+						<input type="range" name="data-pb-mosaic-amount" min="0" max="1" step="0.05" value="1">
+					</label>
+					<label>
+						Block Size:
+						<input type="range" name="data-pb-mosaic-size" min="0" max="20" step="1" value="5">
+					</label>
+					
+					<button type="submit">Apply</button>
+				</form>		
+			</li>
+		</ul>
+
+
+		<ul>
+			<li>
+				<div id="filter-noise-target" class="bee filter-noise"></div>
+			</li>
+			<li>
+				<form action="#" id="interaction-noise">
+				<h3>Noise</h3>
+					<label>
+						Amount:
+						<input type="range" name="data-pb-noise-amount" min="0" max="100" step="1" value="30">
+					</label>
+					
+					<button type="submit">Apply</button>
+				</form>		
+			</li>
+			<li>
+				<div id="filter-tint-target" class="bee filter-tint"></div>
+			</li>
+			<li>
+				<form action="#" id="interaction-tint">
+				<h3>Tint</h3>
+					<label>
+						Amount:
+						<input type="range" name="data-pb-tint-amount" min="0" max="1" step="0.05" value="0.2">
+					</label>
+					<label>
+						Colour:
+						<input type="input" name="data-pb-tint-color" value="#0066FF">
+					</label>
+					
+					<button type="submit">Apply</button>
+				</form>		
+			</li>
+		</ul>
+
+		<p id="copyright">&copy; Copyright 2010, Dave Shea. <a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS lives on GitHub.</a> <a href="http://www.opensource.org/licenses/mit-license.php">MIT Licensed.</a></p>
+
+
+	</body>
+</html>
