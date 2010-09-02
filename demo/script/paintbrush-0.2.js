@@ -54,23 +54,23 @@ function addFilter(filterType) {
 
 	
 	// get every element with the specified filter class
-	toFilter = getElementsByClassName(filterType);
+	var toFilter = getElementsByClassName(filterType);
 
 	// now let's loop through those elements
 	for(var current in toFilter) {
 
 		// load all specified parameters for this filter
-		params = getFilterParameters(toFilter[current]);
+		var params = getFilterParameters(toFilter[current]);
 
 		// get the image we're going to work with
 		var img = getReferenceImage(toFilter[current]);
 
 		// make sure we've actually got something to work with
-		img.onLoad = processFilters(filterType, img, params, current, toFilter);
+		img.onLoad = processFilters(filterType, img, params, toFilter[current]);
 	}
 
 
-	function processFilters(filterType, img, params, current, toFilter) {
+	function processFilters(filterType, img, params, toFilter) {
 
 		// create working buffer
 		var buffer = document.createElement("canvas");
@@ -107,7 +107,7 @@ function addFilter(filterType) {
 				
 		
 				
-				if (filterType != "filter-blur") {
+				if ((filterType != "filter-blur") && (filterType != "filter-matrix")) {
 					// the main loop through every pixel to apply effects
 					// (data is per-byte, and there are 4 bytes per pixel, so lets only loop through each pixel and save a few cycles)
 					for (var i = 0, data = pixels.data, length = data.length; i < length >> 2; i++) {
@@ -125,7 +125,7 @@ function addFilter(filterType) {
 				c.putImageData(pixels, 0, 0);
 				
 				// finally, replace the original image data with the buffer
-				placeReferenceImage(toFilter[current], buffer);
+				placeReferenceImage(toFilter, buffer, img);
 			}
 		}
 	}
@@ -156,7 +156,7 @@ function addFilter(filterType) {
 	}
 
 	// re-draw manipulated pixels to the reference image, regardless whether it was an img element or some other element with a background image
-	function placeReferenceImage(ref, buffer) {
+	function placeReferenceImage(ref, buffer, img) {
 		// dump the buffer as a DataURL
 		result = buffer.toDataURL("image/png");
 		if (ref.nodeName == "IMG") {
