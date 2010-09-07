@@ -60,15 +60,12 @@ figure {
 	width: 240px;
 	display: block;
 	text-align: center;
-	background: url(images/bg.png);
+	background: url(../images/bg.png);
 }
 label {
 	display: block;
 	margin-bottom: 1em;
 }
-	label input {
-		display: block;
-	}
 p {
 	color: #666;
 }
@@ -87,6 +84,9 @@ figcaption, li p {
 	padding-top: 50px;
 	clear: both;
 }
+.thumb img {
+	cursor: pointer;
+}
 
 
 
@@ -104,17 +104,17 @@ canvas {
 	padding-top: 160px; 
 }
 .bee {
-	background: url(images/240-bee.jpg) no-repeat 0 0;
+	background: url(../images/240/bee.jpg) no-repeat 0 0;
 }
 .dots {
-	background: url(images/120-dots.png) no-repeat 0 0;
+	background: url(../images/120/dots.png) no-repeat 0 0;
 }
 .lighthouse {
-	background: url(images/240-lighthouse.jpg) no-repeat 0 0;
+	background: url(../images/240/lighthouse.jpg) no-repeat 0 0;
 }
 .road {
-	background: url(images/240-road.jpg) no-repeat 0 0;
+	background: url(../images/240/road.jpg) no-repeat 0 0;
 }
 .stones {
-	background: url(images/240-stones.jpg) no-repeat 0 0;
+	background: url(../images/240/stones.jpg) no-repeat 0 0;
 }

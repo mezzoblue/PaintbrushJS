@@ -7,7 +7,7 @@
 		<script type="text/javascript" src="script/common.js"></script>
 		<script type="text/javascript" src="script/paintbrush-0.2.js"></script>
 
-		<link rel="stylesheet" type="text/css" href="style.css" />
+		<link rel="stylesheet" type="text/css" href="css/light.css" />
 	</head>
 	<body>
 		
@@ -16,19 +16,19 @@
 		<ul class="odd">
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Original, default (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" class="filter-sepia" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" class="filter-sepia" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Sepia tone, default (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" class="filter-greyscale" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" class="filter-greyscale" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Greyscale, default (img)</figcaption>
 				</figure>
 			</li>
@@ -36,19 +36,19 @@
 		<ul>
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" class="filter-tint" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" class="filter-tint" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Tint, default (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" class="filter-blur" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" class="filter-blur" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Blur, default (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" class="filter-noise" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" class="filter-noise" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Noise, default (img)</figcaption>
 				</figure>
 			</li>
@@ -56,19 +56,19 @@
 		<ul>
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" class="filter-posterize" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" class="filter-posterize" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Posterize, default (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" class="filter-mosaic" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" class="filter-mosaic" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Mosaic, default (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-lighthouse.jpg" class="filter-matrix" width="240" height="160" alt="Point Atkinson Lighthouse">
+					<img src="images/240/lighthouse.jpg" class="filter-matrix" width="240" height="160" alt="Point Atkinson Lighthouse">
 					<figcaption>Matrix, default (img)</figcaption>
 				</figure>
 			</li>
@@ -83,13 +83,13 @@
 			</li>
 			<li>
 				<div class="bee filter-sepia"
-					data-pb-sepia-amount="0.5">
+					data-pb-opacity="0.5">
 					<p>Sepia tone: Amount 0.5 (CSS Background)</p>
 				</div>
 			</li>
 			<li>
 				<div class="bee filter-greyscale"
-					data-pb-greyscale-amount="0.5">
+					data-pb-opacity="0.5">
 					<p>Greyscale: Amount 0.5 (CSS Background)</p>
 				</div>
 			</li>
@@ -97,20 +97,20 @@
 		<ul>
 			<li>
 				<div class="bee filter-tint"
-					data-pb-tint-amount="0.2" 
+					data-pb-opacity="0.2" 
 					data-pb-tint-color="#f0c">
 					<p>Tint: Amount 0.2, Color #FF00CC (CSS Background)</p>
 				</div>
 			</li>
 			<li>
 				<div class="bee filter-blur"
-					data-pb-blur-amount="3">
+					data-pb-amount="3">
 					<p>Blur: Amount 3 (CSS Background)</p>
 				</div>
 			</li>
 			<li>
 				<div class="bee filter-noise" 
-					data-pb-noise-amount="30"
+					data-pb-amount="30"
 					data-pb-noise-type="monochrome">
 					<p>Noise: Amount 30, Type monochrome (CSS Background)</p>
 				</div>
@@ -119,14 +119,14 @@
 		<ul>
 			<li>
 				<div class="bee filter-posterize"
-					data-pb-posterize-amount="10">
+					data-pb-amount="10">
 					<p>Posterize: Amount 10 (CSS Background)</p>
 				</div>
 			</li>
 			<li>
 				<div class="bee filter-mosaic"
 					data-pb-mosaic-size="10"
-					data-pb-mosaic-amount="0.5">
+					data-pb-amount="0.5">
 					<p>Mosaic: Amount 0.5, Size 10 (CSS Background)</p>
 				</div>
 			</li>
@@ -141,22 +141,22 @@
 		<ul class="odd">
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" width="240" height="160" alt="West Coast roads, New Zealand">
+					<img src="images/240/road.jpg" width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Original (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" class="filter-sepia" 
-						data-pb-sepia-amount="0.7"
+					<img src="images/240/road.jpg" class="filter-sepia" 
+						data-pb-opacity="0.7"
 						width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Sepia tone: Amount 0.7 (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" class="filter-greyscale" 
-						data-pb-greyscale-amount="0.8"
+					<img src="images/240/road.jpg" class="filter-greyscale" 
+						data-pb-opacity="0.8"
 						width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Greyscale: Amount 0.8 (img)</figcaption>
 				</figure>
@@ -165,8 +165,8 @@
 		<ul>
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" class="filter-tint" 
-						data-pb-tint-amount="0.5" 
+					<img src="images/240/road.jpg" class="filter-tint" 
+						data-pb-opacity="0.5" 
 						data-pb-tint-color="#009900" 
 						width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Tint: Amount 0.5, Color #090 (img)</figcaption>
@@ -174,16 +174,16 @@
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" class="filter-blur" 
-						data-pb-blur-amount="0.4" 
+					<img src="images/240/road.jpg" class="filter-blur" 
+						data-pb-amount="0.4" 
 						width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Blur: Amount 0.4 (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" class="filter-noise"
-						data-pb-noise-amount="200"
+					<img src="images/240/road.jpg" class="filter-noise"
+						data-pb-amount="200"
 						data-pb-noise-type="colour"
 						width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Noise: Amount 200, Type color (img)</figcaption>
@@ -193,15 +193,15 @@
 		<ul>
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" class="filter-posterize"
-						data-pb-posterize-amount="3"
+					<img src="images/240/road.jpg" class="filter-posterize"
+						data-pb-amount="3"
 						width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Posterize: Amount 3 (img)</figcaption>
 				</figure>
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" class="filter-mosaic"
+					<img src="images/240/road.jpg" class="filter-mosaic"
 						data-pb-mosaic-size="3"
 						width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Mosaic: Size 3 (img)</figcaption>
@@ -209,7 +209,7 @@
 			</li>
 			<li>
 				<figure>
-					<img src="images/240-road.jpg" class="filter-matrix" 
+					<img src="images/240/road.jpg" class="filter-matrix" 
 						width="240" height="160" alt="West Coast roads, New Zealand">
 					<figcaption>Matrix: default (img)</figcaption>
 				</figure>
@@ -225,13 +225,13 @@
 			</li>
 			<li>
 				<div class="stones filter-sepia"
-					data-pb-sepia-amount="2">
+					data-pb-opacity="2">
 					<p>Sepia tone: Amount 2 (CSS Background)</p>
 				</div>
 			</li>
 			<li>
 				<div class="stones filter-greyscale"
-					data-pb-greyscale-amount="-2">
+					data-pb-opacity="-2">
 					<p>Greyscale: Amount -2 (saturation hack) (CSS Background)</p>
 				</div>
 			</li>
@@ -239,20 +239,20 @@
 		<ul>
 			<li>
 				<div class="stones filter-tint"
-					data-pb-tint-amount="0.4" 
+					data-pb-opacity="0.4" 
 					data-pb-tint-color="#06F">
 					<p>Tint: Amount 0.4, Color #06F (CSS Background)</p>
 				</div>
 			</li>
 			<li>
 				<div class="stones filter-blur"
-					data-pb-blur-amount="10">
+					data-pb-amount="10">
 					<p>Blur: Amount 10 (CSS Background)</p>
 				</div>
 			</li>
 			<li>
 				<div class="stones filter-noise" 
-					data-pb-noise-amount="150"
+					data-pb-amount="150"
 					data-pb-noise-type="mono">
 					<p>Noise: Amount 150, Type mono (CSS Background)</p>
 				</div>
@@ -261,7 +261,7 @@
 		<ul>
 			<li>
 				<div class="stones filter-posterize" 
-					data-pb-posterize-amount="8">
+					data-pb-amount="8">
 					<p>Posterize: Amount 8 (CSS Background)</p>
 				</div>
 			</li>

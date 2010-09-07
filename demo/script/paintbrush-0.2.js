@@ -37,27 +37,32 @@ addLoadEvent(function() {
 // function to process all filters
 // (exists outside of loader to enable standalone use)
 function processFilters() {
+
+	// create working buffer outside the main loop so it's only done once
+	var buffer = document.createElement("canvas");
+	// get the canvas context
+	var c = buffer.getContext('2d');
+
 	// only run if this browser supports canvas, obviously
 	if (supports_canvas()) {
 		// you can add or remove lines here, depending on which filters you're using.
-		addFilter("filter-blur");
-		addFilter("filter-greyscale");
-		addFilter("filter-mosaic");
-		addFilter("filter-noise");
-		addFilter("filter-posterize");
-		addFilter("filter-sepia");
-		addFilter("filter-tint");
+		addFilter("filter-blur", buffer, c);
+		addFilter("filter-greyscale", buffer, c);
+		addFilter("filter-mosaic", buffer, c);
+		addFilter("filter-noise", buffer, c);
+		addFilter("filter-posterize", buffer, c);
+		addFilter("filter-sepia", buffer, c);
+		addFilter("filter-tint", buffer, c);
 
 		// early experimental phase
-		addFilter("filter-matrix");
+		addFilter("filter-matrix", buffer, c);
 	}
 }
 
 
 // the main workhorse function
-function addFilter(filterType) {
+function addFilter(filterType, buffer, c) {
 
-	
 	// get every element with the specified filter class
 	var toFilter = getElementsByClassName(filterType.toLowerCase());
 
@@ -71,22 +76,17 @@ function addFilter(filterType) {
 		var img = getReferenceImage(toFilter[current]);
 
 		// make sure we've actually got something to work with
-		img.onLoad = processFilters(filterType, img, params, toFilter, current);
+		img.onLoad = processFilters(filterType, img, params, toFilter, current, buffer, c);
 	}
 
 
-	function processFilters(filterType, img, params, toFilter, current) {
+	function processFilters(filterType, img, params, toFilter, current, buffer, c) {
 
 		// quick access to original element
 		var ref = toFilter[current];
-		
+
 		// original image copy naming convention
 		var originalSuffix = filterType + "-" + current;
-
-		// create working buffer
-		var buffer = document.createElement("canvas");
-		// get the canvas context
-		var c = buffer.getContext('2d');
 
 		// set buffer dimensions to image dimensions
 		c.width = buffer.width = img.width;
@@ -103,7 +103,7 @@ function addFilter(filterType) {
 				//
 				// blur and matrix filters have to exist outside the main loop
 				if (filterType == "filter-blur") {
-					pixels = gaussianBlur(img, pixels, params.blurAmount);
+					pixels = gaussianBlur(img, pixels, params.amount);
 				}
 				if (filterType == "filter-matrix") {
 					pixels = applyMatrix(img, pixels, params);
@@ -136,17 +136,8 @@ function addFilter(filterType) {
 				c.putImageData(pixels, 0, 0);
 				
 
-				// store the original image in the DOM
-				var stashed = stashOriginal(img, originalSuffix);
-
-				// then replace the original image data with the buffer
-				placeReferenceImage(ref, buffer.toDataURL("image/png"), img);
-				
-				// and finally, add a class that references the stashed original image for later use
-				// (but only if we actually stashed one above)
-				if (stashed) {
-					ref.className += " pb-ref-" + originalSuffix;
-				}
+				// stash a copy and let the original know how to reference it
+				stashOriginal(img, originalSuffix, ref, buffer);
 			
 			}
 		}
@@ -161,16 +152,12 @@ function addFilter(filterType) {
 
 		// create the params object and set some default parameters up front
 		var params = {
-			"blurAmount"		:	1,		// 0 and higher
-			"greyscaleAmount"	:	1,		// between 0 and 1
-			"mosaicAmount"		:	1,		// between 0 and 1
+			"opacity"			:	1,		// 0 and higher
+			"amount"			:	1,		// 0 and higher
+
 			"mosaicSize"		:	5,		// 1 and higher
-			"noiseAmount"		:	30,		// 0 and higher
 			"noiseType"			:	"mono",	// mono or color
-			"posterizeAmount"	:	5,		// 0 - 255, though 0 and 1 are relatively useless
-			"sepiaAmount"		:	1,		// between 0 and 1
-			"tintAmount"		:	0.3,	// between 0 and 1
-			"tintColor"			:	"#FFF",	// any hex color
+			"tintColor"			:	"#00F",	// any hex color
 
 			"matrixAmount"		:	0.2		// between 0 and 1
 		};
@@ -191,8 +178,8 @@ function addFilter(filterType) {
 		params['tintColor'] = ref.getAttribute("data-pb-tint-colour") || params['tintColor'];
 
 		// Posterize requires a couple more generated values, lets keep them out of the loop
-		params['posterizeAreas'] = 256 / params.posterizeAmount;
-		params['posterizeValues'] = 255 / (params.posterizeAmount - 1);
+		params['posterizeAreas'] = 256 / params.amount;
+		params['posterizeValues'] = 255 / (params.amount - 1);
 
 		return(params);
 	}
@@ -229,33 +216,6 @@ function addFilter(filterType) {
 	}
 
 
-
-	// stash a copy of the original image in the DOM for later use
-	function stashOriginal(img, originalSuffix) {
-		
-		var orig = "pb-original-" + originalSuffix;
-
-		// make sure we're not re-adding on repeat calls
-		if (!document.getElementById(orig)) {
-
-			// create the stashed img element
-			var original = document.createElement("img");
-	
-			// set the attributes
-			original.src = img.src;
-			original.id = orig;
-	
-			// for testing only
-			original.style.display = "none";
-			document.body.appendChild(original);
-			
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-
 	// parse a shorthand or longhand hex string, with or without the leading '#', into something usable
 	function createColor(src) {
 		// strip the leading #, if it exists
@@ -286,6 +246,7 @@ function addFilter(filterType) {
 
 		// speed up access
 		var data = pixels.data, val;
+		var imgWidth = img.width;
 
 		// figure out which filter to apply, and do it	
 		switch(filterType) {
@@ -293,23 +254,36 @@ function addFilter(filterType) {
 			case "filter-greyscale":
 				val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
 				data = setRGB(data, index, 
-					findColorDifference(params.greyscaleAmount, val, thisPixel.r),
-					findColorDifference(params.greyscaleAmount, val, thisPixel.g),
-					findColorDifference(params.greyscaleAmount, val, thisPixel.b));
+					findColorDifference(params.opacity, val, thisPixel.r),
+					findColorDifference(params.opacity, val, thisPixel.g),
+					findColorDifference(params.opacity, val, thisPixel.b));
 				break;
 
 			case "filter-mosaic":
+/*
 				var stepX = ((index >> 2) % params.mosaicSize) << 2;
 				var stepY = (Math.floor(((index >> 2) / img.width)) % params.mosaicSize) << 2;
 				var pos = index - stepX - img.width * stepY;
+*/
+
+				var stepX = ((index / 4) % params.mosaicSize) * 4;
+				var stepY = (Math.floor(((index / 4) / imgWidth)) % params.mosaicSize) * 4;
+				
+				var pos = index - stepX - imgWidth * stepY;
+				if (imgWidth % params.mosaicSize) {
+					pos -= Math.floor((1 - (imgWidth % params.mosaicSize)) * 10) * 4;
+				}
+
+
+
 				data = setRGB(data, index,
-					findColorDifference(params.mosaicAmount, data[pos], thisPixel.r),
-					findColorDifference(params.mosaicAmount, data[pos + 1], thisPixel.g),
-					findColorDifference(params.mosaicAmount, data[pos + 2], thisPixel.b));
+					findColorDifference(params.opacity, data[pos], thisPixel.r),
+					findColorDifference(params.opacity, data[pos + 1], thisPixel.g),
+					findColorDifference(params.opacity, data[pos + 2], thisPixel.b));
 				break;
 
 			case "filter-noise":
-				val = noise(params.noiseAmount);
+				val = noise(params.amount);
 
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
 					data = setRGB(data, index, 
@@ -318,31 +292,31 @@ function addFilter(filterType) {
 						checkRGBBoundary(thisPixel.b + val));
 				} else {
 					data = setRGB(data, index, 
-						checkRGBBoundary(thisPixel.r + noise(params.noiseAmount)),
-						checkRGBBoundary(thisPixel.g + noise(params.noiseAmount)),
-						checkRGBBoundary(thisPixel.b + noise(params.noiseAmount)));
+						checkRGBBoundary(thisPixel.r + noise(params.amount)),
+						checkRGBBoundary(thisPixel.g + noise(params.amount)),
+						checkRGBBoundary(thisPixel.b + noise(params.amount)));
 				}
 				break;
 
 			case "filter-posterize":
 				data = setRGB(data, index, 
-					parseInt(params.posterizeValues * parseInt(thisPixel.r / params.posterizeAreas)),
-					parseInt(params.posterizeValues * parseInt(thisPixel.g / params.posterizeAreas)),
-					parseInt(params.posterizeValues * parseInt(thisPixel.b / params.posterizeAreas)));
+					findColorDifference(params.opacity, parseInt(params.posterizeValues * parseInt(thisPixel.r / params.posterizeAreas)), thisPixel.r),
+					findColorDifference(params.opacity, parseInt(params.posterizeValues * parseInt(thisPixel.g / params.posterizeAreas)), thisPixel.g),
+					findColorDifference(params.opacity, parseInt(params.posterizeValues * parseInt(thisPixel.b / params.posterizeAreas)), thisPixel.b));
 				break;
 
 			case "filter-sepia":
 				data = setRGB(data, index, 
-					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
-					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
-					findColorDifference(params.sepiaAmount, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
+					findColorDifference(params.opacity, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
+					findColorDifference(params.opacity, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
+					findColorDifference(params.opacity, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
 				break;
 
 			case "filter-tint":
 				data = setRGB(data, index, 
-					findColorDifference(params.tintAmount, dest.r, thisPixel.r),
-					findColorDifference(params.tintAmount, dest.g, thisPixel.g),
-					findColorDifference(params.tintAmount, dest.b, thisPixel.b));
+					findColorDifference(params.opacity, dest.r, thisPixel.r),
+					findColorDifference(params.opacity, dest.g, thisPixel.g),
+					findColorDifference(params.opacity, dest.b, thisPixel.b));
 				break;
 
 
@@ -524,5 +498,88 @@ function flushDataAttributes(img) {
 		if (thisAttr.substr(0, 8) == "data-pb-") {
 			img.removeAttribute(thisAttr);
 		}
+	}
+}
+
+// remove any Paintbrush classes from the reference image
+function removeClasses(obj) {
+	// get classes of the reference image
+	var classList = (obj.className.toLowerCase()).split(' ');
+	for (var i = 0; i < classList.length; i++) {
+
+		// clean up any existing filter-* classes
+		if (classList[i].substr(0, 7) == "filter-") {
+			removeClass(obj, classList[i]);
+		}
+	}
+}
+
+
+// clean up stashed original copies and reference classes
+function destroyStash(img, preserve) {
+
+	var classList = (img.className.toLowerCase()).split(' ');
+	for (var i = 0; i < classList.length; i++) {
+
+		// quick reference
+		var currentClass = classList[i];
+
+		// have we found an original class?
+		if (currentClass.substr(0, 7) == "pb-ref-") {
+
+			// get the original object too
+			var original = document.getElementById("pb-original-" + currentClass.substr(7, currentClass.length - 7));
+			
+			// replace current with original if the preserve flag is set
+			if (preserve) {
+				img.src = original.src;
+			}
+
+			// kill them, kill them all
+			removeClass(img, currentClass);
+			
+			d = document.body;
+			throwaway = d.removeChild(original);
+
+		}
+	}
+	
+}
+
+function stashOriginal(img, originalSuffix, ref, buffer) {
+
+	// store the original image in the DOM
+	var stashed = stashInDom(img, originalSuffix);
+
+	// then replace the original image data with the buffer
+	placeReferenceImage(ref, buffer.toDataURL("image/png"), img);
+	
+	// and finally, add a class that references the stashed original image for later use
+	// (but only if we actually stashed one above)
+	if (stashed) {
+		ref.className += " pb-ref-" + originalSuffix;
+	}
+}
+
+// stash a copy of the original image in the DOM for later use
+function stashInDom(img, originalSuffix) {
+	
+	var orig = "pb-original-" + originalSuffix;
+
+	// make sure we're not re-adding on repeat calls
+	if (!document.getElementById(orig)) {
+
+		// create the stashed img element
+		var original = document.createElement("img");
+
+		// set the attributes
+		original.src = img.src;
+		original.id = orig;
+		original.style.display = "none";
+		document.body.appendChild(original);
+		
+		return true;
+	} else {
+		return false;
 	}
 }
