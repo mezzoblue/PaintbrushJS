@@ -48,8 +48,8 @@ p {
 																						/* -- Header Layout -- */
 header {
 	width: 500px;
-	padding: 85px 85px 30px 0;
-	margin: 0 auto 33px auto;
+	padding: 65px 85px 30px 0;
+	margin: 0 auto 38px auto;
 	position: relative;
 	background: url(../images/site/divider.png) no-repeat 50% 100%;
 }
@@ -64,7 +64,7 @@ header aside {
 	position: absolute;
 	text-align: right;
 	right: 0;
-	top: 85px;
+	top: 65px;
 }
 	header aside span {
 		overflow: hidden;

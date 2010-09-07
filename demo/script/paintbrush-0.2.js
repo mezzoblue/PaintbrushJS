@@ -164,7 +164,7 @@ function addFilter(filterType, buffer, c) {
 		
 		// check for every attribute, throw it into the params object if it exists.
 		for (var filterName in params){
-			// "blurAmount" ==> "data-pb-blur-amount"
+			// "tintColor" ==> "data-pb-tint-color"
 			var hyphenated = filterName.replace(/([A-Z])/g, function(all, letter) {  
 				return '-' + letter.toLowerCase(); 
 			}),
