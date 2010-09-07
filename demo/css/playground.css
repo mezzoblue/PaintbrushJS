@@ -1,0 +1,267 @@
+/* --------------------------------------------------
+//
+// playground.css
+// Supporting style for the PaintbrushJS playground
+// (not part of the core PaintbrushJS, safe to delete)
+//
+// This project lives on GitHub:
+//    http://github.com/mezzoblue/PaintbrushJS
+//
+// --------------------------------------------------
+*/
+
+
+																						/* -- Base HTML -- */
+a, a:visited {
+	color: #d9dde7;
+	text-decoration: none;
+}
+a:hover, a:focus {
+	text-decoration: underline;
+}
+body {
+	font: 12px "Lucida Grande", "Lucida Sans Unicode", arial, sans-serif;
+	color: #949cac;
+	text-shadow: rgba(0, 0, 0, 0.6) 0 -1px 0;
+	background-color: #30363c;
+	background-image: 
+		url(../images/site/bg-highlight.png),
+		url(../images/site/bg.jpg);
+	background-repeat: repeat-x, repeat;
+	background-position: 50% 0, 50% 0;
+}
+
+input[type=range], input[type=text] {
+	width: 100px;
+}
+input[type=radio] {
+	margin: 0 0 0 10px;
+}
+
+p {
+	line-height: 1.83333;
+}
+
+
+
+
+																						/* -- Header Layout -- */
+header {
+	width: 500px;
+	padding: 65px 85px 30px 0;
+	margin: 0 auto 38px auto;
+	position: relative;
+	background: url(../images/site/divider.png) no-repeat 50% 100%;
+}
+header h1 {
+	margin: 0;
+	height: 33px;
+	overflow: hidden;
+	text-indent: -9999px;
+	background: url(../images/site/heading.png) no-repeat 0 0;
+}
+header aside {
+	position: absolute;
+	text-align: right;
+	right: 0;
+	top: 65px;
+}
+	header aside span {
+		overflow: hidden;
+		text-indent: -9999px;
+		text-align: left;
+		display: block;
+		background: url(../images/site/byline.png);
+		width: 87px;
+		height: 17px;
+	}
+	header aside a, header aside a:visited {
+		display: block;
+	}
+.github {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: block;
+	width: 149px;
+	height: 149px;
+	background: url(../images/site/forkme.png);
+	text-indent: -9999px;
+	overflow: hidden;
+}
+
+
+
+																						/* -- Interaction Area Layout -- */
+.thumbnails {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	overflow: hidden;
+}
+.thumbnails li {
+	float: left;
+	list-style: none;
+	margin: 0 9px 0 0;
+	padding: 0 0 20px 0;
+}
+	.thumbnails li.current {
+		background: url(../images/site/current.png) no-repeat 50% 41px;
+	}
+.thumbnails img {
+	opacity: 0.6;
+	-webkit-transform: scale(0.98);
+	-webkit-transition-property: opacity, transform, box-shadow;
+	-webkit-transition-duration: 0.15s;
+	-webkit-transition-timing-function: ease-out;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.5) 0 0 5px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.5) 0 0 5px;
+	box-shadow: rgba(0, 0, 0, 0.5) 0 0 5px;
+	cursor: pointer;
+}
+	.thumbnails li.current img, .thumbnails img:hover {
+		opacity: 1;
+		-webkit-transform: scale(1);
+		-webkit-box-shadow: rgba(0, 0, 0, 1) 0 0 8px;
+	}
+	.thumbnails li:last-child {
+		margin-right: 0;
+	}
+
+#interaction {
+	width: 525px;
+	padding: 27px 30px 57px 30px;
+	margin: 0 auto 30px auto;
+	background: rgba(27, 30, 33, 0.5);
+	border: solid 1px rgba(255, 255, 255, 0.12);
+	border-width: 0 0 1px 0;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	position: relative;
+}
+#filter-target {
+	border: solid 12px #fff;
+	-webkit-box-shadow: #000 0 5px 32px;
+	-moz-box-shadow: #000 0 5px 32px;
+	box-shadow: #000 0 5px 32px;
+}
+.selector {
+	display: block;
+	position: absolute;
+	bottom: 20px;
+	left: 30px;
+}
+.controls {
+	position: absolute;
+	bottom: 20px;
+	left: 200px;
+}
+	.controls input {
+		margin-right: 30px;
+		vertical-align: middle;
+	}
+	.controls label:last-child input {
+		margin-right: 0;
+	}
+.apply {
+	display: none;
+}
+
+
+																						/* -- Description Area Layout -- */
+#description {
+	width: 585px;
+	padding: 20px 0 0 0;
+	margin: 0 auto;
+}
+#description ul {
+	margin: 1.8em 0 0 0;
+	padding: 0;
+	line-height: 1.8333;
+}
+#description li {
+	list-style: none;
+	margin-bottom: 0.8em;
+}
+#description aside {
+	float: right;
+	width: 210px;
+	text-align: right;
+	padding-top: 20px;
+}
+#description aside p {
+	color: #606772;
+	text-align: center;
+	width: 130px;
+	margin: 8px 0 0 auto;
+}
+#description aside a, #description aside a:visited {
+	width: 130px;
+	padding: 10px 0;
+	margin: 0 0 0 auto;
+	display: block;
+	font-size: 13px;
+	text-shadow: rgba(0, 0, 0, 0.33) 0 1px 3px;
+	text-align: center;
+	border: solid 1px #ee5fbe;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	color: #fff;
+	background: #e338aa;
+
+	background: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0, rgb(221,55,166)),
+	    color-stop(1, rgb(204,50,153))
+	);
+	background: -moz-linear-gradient(
+	    center bottom,
+	    rgb(221,55,166) 0%,
+	    rgb(204,50,153) 100%
+	);
+
+	-webkit-box-shadow: rgba(0, 0, 0, 0.66) 0 2px 3px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.66) 0 2px 3px;
+	box-shadow: rgba(0, 0, 0, 0.66) 0 2px 3px;
+	
+	-webkit-transition: box-shadow 0.25s linear;
+}
+	#description aside a:hover, #description aside a:focus {
+		text-decoration: none;
+		text-shadow: rgba(0, 0, 0, 0.5) 0 1px 2px;
+		-webkit-box-shadow: rgba(0, 0, 0, 0.66) 0 3px 6px;
+		-moz-box-shadow: rgba(0, 0, 0, 0.66) 0 3px 6px;
+		box-shadow: rgba(0, 0, 0, 0.66) 0 3px 6px;
+		background: -webkit-gradient(
+		    linear,
+		    left bottom,
+		    left top,
+		    color-stop(0, rgb(200,49,150)),
+		    color-stop(1, rgb(227,56,170))
+		);
+		background: -moz-linear-gradient(
+		    center bottom,
+		    rgb(200,49,150) 0%,
+		    rgb(227,56,170) 100%
+		);
+	}
+
+																						/* -- Footer Layout -- */
+footer {
+	width: 585px;
+	padding: 20px 0;
+	color: #606772;
+	background: url(../images/site/divider.png) no-repeat 50% 0;
+	margin: 40px auto 0 auto;
+}
+footer a, footer a:visited {
+	color: #838890;
+}
+footer a:hover, footer a:focus {
+	color: #d9dde7;
+}
