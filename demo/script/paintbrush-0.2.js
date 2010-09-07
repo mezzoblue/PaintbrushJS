@@ -103,7 +103,7 @@ function addFilter(filterType, buffer, c) {
 				//
 				// blur and matrix filters have to exist outside the main loop
 				if (filterType == "filter-blur") {
-					pixels = gaussianBlur(img, pixels, params.amount);
+					pixels = gaussianBlur(img, pixels, params.blurAmount);
 				}
 				if (filterType == "filter-matrix") {
 					pixels = applyMatrix(img, pixels, params);
@@ -152,12 +152,17 @@ function addFilter(filterType, buffer, c) {
 
 		// create the params object and set some default parameters up front
 		var params = {
-			"opacity"			:	1,		// 0 and higher
-			"amount"			:	1,		// 0 and higher
-
+			"blurAmount"		:	1,		// 0 and higher
+			"greyscaleOpacity"	:	1,		// between 0 and 1
+			"mosaicOpacity"		:	1,		// between 0 and 1
 			"mosaicSize"		:	5,		// 1 and higher
+			"noiseAmount"		:	30,		// 0 and higher
 			"noiseType"			:	"mono",	// mono or color
-			"tintColor"			:	"#00F",	// any hex color
+			"posterizeAmount"	:	5,		// 0 - 255, though 0 and 1 are relatively useless
+			"posterizeOpacity"	:	1,		// between 0 and 1
+			"sepiaOpacity"		:	1,		// between 0 and 1
+			"tintColor"			:	"#FFF",	// any hex color
+			"tintOpacity"		:	0.3,	// between 0 and 1
 
 			"matrixAmount"		:	0.2		// between 0 and 1
 		};
@@ -178,8 +183,8 @@ function addFilter(filterType, buffer, c) {
 		params['tintColor'] = ref.getAttribute("data-pb-tint-colour") || params['tintColor'];
 
 		// Posterize requires a couple more generated values, lets keep them out of the loop
-		params['posterizeAreas'] = 256 / params.amount;
-		params['posterizeValues'] = 255 / (params.amount - 1);
+		params['posterizeAreas'] = 256 / params.posterizeAmount;
+		params['posterizeValues'] = 255 / (params.posterizeAmount - 1);
 
 		return(params);
 	}
@@ -254,13 +259,15 @@ function addFilter(filterType, buffer, c) {
 			case "filter-greyscale":
 				val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
 				data = setRGB(data, index, 
-					findColorDifference(params.opacity, val, thisPixel.r),
-					findColorDifference(params.opacity, val, thisPixel.g),
-					findColorDifference(params.opacity, val, thisPixel.b));
+					findColorDifference(params.greyscaleOpacity, val, thisPixel.r),
+					findColorDifference(params.greyscaleOpacity, val, thisPixel.g),
+					findColorDifference(params.greyscaleOpacity, val, thisPixel.b));
 				break;
 
 			case "filter-mosaic":
 /*
+				// faster, but buggy, hence the expansion below as I figure this out
+				
 				var stepX = ((index >> 2) % params.mosaicSize) << 2;
 				var stepY = (Math.floor(((index >> 2) / img.width)) % params.mosaicSize) << 2;
 				var pos = index - stepX - img.width * stepY;
@@ -277,13 +284,13 @@ function addFilter(filterType, buffer, c) {
 
 
 				data = setRGB(data, index,
-					findColorDifference(params.opacity, data[pos], thisPixel.r),
-					findColorDifference(params.opacity, data[pos + 1], thisPixel.g),
-					findColorDifference(params.opacity, data[pos + 2], thisPixel.b));
+					findColorDifference(params.mosaicOpacity, data[pos], thisPixel.r),
+					findColorDifference(params.mosaicOpacity, data[pos + 1], thisPixel.g),
+					findColorDifference(params.mosaicOpacity, data[pos + 2], thisPixel.b));
 				break;
 
 			case "filter-noise":
-				val = noise(params.amount);
+				val = noise(params.noiseAmount);
 
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
 					data = setRGB(data, index, 
@@ -292,31 +299,31 @@ function addFilter(filterType, buffer, c) {
 						checkRGBBoundary(thisPixel.b + val));
 				} else {
 					data = setRGB(data, index, 
-						checkRGBBoundary(thisPixel.r + noise(params.amount)),
-						checkRGBBoundary(thisPixel.g + noise(params.amount)),
-						checkRGBBoundary(thisPixel.b + noise(params.amount)));
+						checkRGBBoundary(thisPixel.r + noise(params.noiseAmount)),
+						checkRGBBoundary(thisPixel.g + noise(params.noiseAmount)),
+						checkRGBBoundary(thisPixel.b + noise(params.noiseAmount)));
 				}
 				break;
 
 			case "filter-posterize":
 				data = setRGB(data, index, 
-					findColorDifference(params.opacity, parseInt(params.posterizeValues * parseInt(thisPixel.r / params.posterizeAreas)), thisPixel.r),
-					findColorDifference(params.opacity, parseInt(params.posterizeValues * parseInt(thisPixel.g / params.posterizeAreas)), thisPixel.g),
-					findColorDifference(params.opacity, parseInt(params.posterizeValues * parseInt(thisPixel.b / params.posterizeAreas)), thisPixel.b));
+					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(thisPixel.r / params.posterizeAreas)), thisPixel.r),
+					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(thisPixel.g / params.posterizeAreas)), thisPixel.g),
+					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(thisPixel.b / params.posterizeAreas)), thisPixel.b));
 				break;
 
 			case "filter-sepia":
 				data = setRGB(data, index, 
-					findColorDifference(params.opacity, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
-					findColorDifference(params.opacity, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
-					findColorDifference(params.opacity, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
+					findColorDifference(params.sepiaOpacity, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
+					findColorDifference(params.sepiaOpacity, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
+					findColorDifference(params.sepiaOpacity, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
 				break;
 
 			case "filter-tint":
 				data = setRGB(data, index, 
-					findColorDifference(params.opacity, dest.r, thisPixel.r),
-					findColorDifference(params.opacity, dest.g, thisPixel.g),
-					findColorDifference(params.opacity, dest.b, thisPixel.b));
+					findColorDifference(params.tintOpacity, dest.r, thisPixel.r),
+					findColorDifference(params.tintOpacity, dest.g, thisPixel.g),
+					findColorDifference(params.tintOpacity, dest.b, thisPixel.b));
 				break;
 
 

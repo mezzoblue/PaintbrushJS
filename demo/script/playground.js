@@ -15,30 +15,6 @@
 
 
 
-
-/*
-
-
-SCRATCH LIST
-
-
-- destroy current original when changing between images / filters
-	-- check
-
-
-- kill filter class in HTML, re-add dynamically, update between filter switches
-	-- sorta, needs work (toggle doesn't update, apply button)
-
-
-- after any processFilters call, add the img src to the parent as css background image
-
-
-
-
-*/
-
-
-
 // filter master control object
 var filterControl = {
 	"filters"	:	[
