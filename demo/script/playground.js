@@ -172,7 +172,10 @@ addLoadEvent(function() {
 	inputs = interaction.getElementsByTagName("input");
 	for (var i = 0; i < inputs.length; i++) {
 		if (inputs[i].type.toLowerCase() == "range" || "radio") {
-			inputs[i].onchange = function() {
+			// kills performance if we're calling it onchange.
+			// but inaccessible / irrelevant to mobile if we do it onmouseup.
+			// damned if we do... I'm favouring speed here, would love input.
+			inputs[i].onmouseup = function() {		
 				updateFilters(img);
 			}
 		}
