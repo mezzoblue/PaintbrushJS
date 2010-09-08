@@ -265,23 +265,16 @@ function addFilter(filterType, buffer, c) {
 				break;
 
 			case "filter-mosaic":
-/*
-				// faster, but buggy, hence the expansion below as I figure this out
-				
-				var stepX = ((index >> 2) % params.mosaicSize) << 2;
-				var stepY = (Math.floor(((index >> 2) / img.width)) % params.mosaicSize) << 2;
-				var pos = index - stepX - img.width * stepY;
-*/
+				// a bit more verbose to reduce amount of math necessary
+				var pos = index >> 2;
+				var stepY = Math.floor(pos / imgWidth);
+				var stepY1 = stepY % params.mosaicSize;
+				var stepX = pos - (stepY * imgWidth);
+				var stepX1 = stepX % params.mosaicSize;
 
-				var stepX = ((index / 4) % params.mosaicSize) * 4;
-				var stepY = (Math.floor(((index / 4) / imgWidth)) % params.mosaicSize) * 4;
-				
-				var pos = index - stepX - imgWidth * stepY;
-				if (imgWidth % params.mosaicSize) {
-					pos -= Math.floor((1 - (imgWidth % params.mosaicSize)) * 10) * 4;
-				}
-
-
+				if (stepY1) pos -= stepY1 * imgWidth;
+				if (stepX1) pos -= stepX1;
+				pos = pos << 2;
 
 				data = setRGB(data, index,
 					findColorDifference(params.mosaicOpacity, data[pos], thisPixel.r),
