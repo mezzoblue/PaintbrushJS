@@ -113,18 +113,32 @@ header aside {
 .thumbnails img {
 	opacity: 0.6;
 	-webkit-transform: scale(0.98);
-	-webkit-transition-property: opacity, transform, box-shadow;
+	-moz-transform: scale(0.98);
+	transform: scale(0.98);
+
+	-webkit-transition-property: opacity, -webkit-transform, -webkit-box-shadow;
 	-webkit-transition-duration: 0.15s;
 	-webkit-transition-timing-function: ease-out;
+
+	-moz-transition-property: opacity, -moz-transform, -moz-box-shadow;
+	-moz-transition-duration: 0.15s;
+	-moz-transition-timing-function: ease-out;
+
 	-webkit-box-shadow: rgba(0, 0, 0, 0.5) 0 0 5px;
 	-moz-box-shadow: rgba(0, 0, 0, 0.5) 0 0 5px;
 	box-shadow: rgba(0, 0, 0, 0.5) 0 0 5px;
+
 	cursor: pointer;
 }
 	.thumbnails li.current img, .thumbnails img:hover {
 		opacity: 1;
 		-webkit-transform: scale(1);
+		-moz-transform: scale(1);
+		transform: scale(1);
+
 		-webkit-box-shadow: rgba(0, 0, 0, 1) 0 0 8px;
+		-moz-box-shadow: rgba(0, 0, 0, 1) 0 0 8px;
+		box-shadow: rgba(0, 0, 0, 1) 0 0 8px;
 	}
 	.thumbnails li:last-child {
 		margin-right: 0;
@@ -231,7 +245,7 @@ header aside {
 	-moz-box-shadow: rgba(0, 0, 0, 0.66) 0 2px 3px;
 	box-shadow: rgba(0, 0, 0, 0.66) 0 2px 3px;
 	
-	-webkit-transition: box-shadow 0.25s linear;
+	-webkit-transition: -webkit-box-shadow 0.25s linear;
 }
 	#description aside a:hover, #description aside a:focus {
 		text-decoration: none;

@@ -124,8 +124,8 @@ addLoadEvent(function() {
 			thumbs[j].onclick = function() {
 			
 				// clear classes on parent li elements
-				var parentLi = this.parentElement;
-				var parentUl = parentLi.parentElement;
+				var parentLi = this.parentNode;
+				var parentUl = parentLi.parentNode;
 				var lis = parentUl.getElementsByTagName("li");
 				for (var k = 0; k < lis.length; k++) {
 					removeClass(lis[k], "current");
