@@ -263,13 +263,21 @@ function addFilter(filterType) {
 				break;
 
 			case "filter-mosaic":
-				var stepX = ((index >> 2) % params.mosaicSize) << 2;
-				var stepY = (Math.floor(((index >> 2) / img.width)) % params.mosaicSize) << 2;
-				var pos = index - stepX - img.width * stepY;
+				// a bit more verbose to reduce amount of math necessary
+				var pos = index >> 2;
+				var stepY = Math.floor(pos / imgWidth);
+				var stepY1 = stepY % params.mosaicSize;
+				var stepX = pos - (stepY * imgWidth);
+				var stepX1 = stepX % params.mosaicSize;
+
+				if (stepY1) pos -= stepY1 * imgWidth;
+				if (stepX1) pos -= stepX1;
+				pos = pos << 2;
+
 				data = setRGB(data, index,
-					findColorDifference(params.mosaicAmount, data[pos], thisPixel.r),
-					findColorDifference(params.mosaicAmount, data[pos + 1], thisPixel.g),
-					findColorDifference(params.mosaicAmount, data[pos + 2], thisPixel.b));
+					findColorDifference(params.mosaicOpacity, data[pos], thisPixel.r),
+					findColorDifference(params.mosaicOpacity, data[pos + 1], thisPixel.g),
+					findColorDifference(params.mosaicOpacity, data[pos + 2], thisPixel.b));
 				break;
 
 			case "filter-noise":
