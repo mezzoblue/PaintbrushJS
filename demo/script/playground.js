@@ -97,10 +97,12 @@ addLoadEvent(function() {
 		destroyStash(img, true);
 		// adjust visible control panel
 		displayControls();
+		updateFilters(img);
 	}
 	
 	// initialize the control panel
 	displayControls();
+	updateFilters(img);
 
 });
 
@@ -236,7 +238,6 @@ function updateFilters(img) {
 	processFilters();
 
 	img.style.visibility = "visible";
-
 }
 
 
@@ -263,7 +264,9 @@ function displayControls() {
 		// if we've got a match, display this current filter's control panel
 		addClass(img, obj.filterClass);
 	}
-		
+
+	// kinda weird that I need to apply this inside and outside the filter. ideally it'd only happen here.
+	// Haven't quite tracked down why the 2x application is necessary yet.
 	updateFilters(img);
 }
 
