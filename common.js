@@ -44,7 +44,7 @@ var getElementsByClassName = function (className, tag, elm){
 				nodeName = (tag)? new RegExp("\\b" + tag + "\\b", "i") : null,
 				returnElements = [],
 				current;
-			for(var i=0, il=elements.length; i<il; i+=1){
+			for(var i = 0, il = elements.length; i < il; i += 1){
 				current = elements[i];
 				if(!nodeName || nodeName.test(current.nodeName)) {
 					returnElements.push(current);
@@ -89,10 +89,10 @@ var getElementsByClassName = function (className, tag, elm){
 				current,
 				returnElements = [],
 				match;
-			for(var k=0, kl=classes.length; k<kl; k+=1){
+			for(var k = 0, kl=classes.length; k<kl; k+=1){
 				classesToCheck.push(new RegExp("(^|\\s)" + classes[k] + "(\\s|$)"));
 			}
-			for(var l=0, ll=elements.length; l<ll; l+=1){
+			for(var l = 0, ll=elements.length; l<ll; l+=1){
 				current = elements[l];
 				match = false;
 				for(var m=0, ml=classesToCheck.length; m<ml; m+=1){
@@ -113,16 +113,16 @@ var getElementsByClassName = function (className, tag, elm){
 
 
 
-// simple check to see whether canvas is supported in this browser
-// copied and pasted from http://diveintohtml5.org/detect.html#canvas
+// Simple check to see whether canvas is supported in this browser
+// Copied and pasted from http://diveintohtml5.org/detect.html#canvas
 function supports_canvas() {
 	return !!document.createElement('canvas').getContext;
 }
 
 
 
-// calculate gaussian blur
-// adapted from http://pvnick.blogspot.com/2010/01/im-currently-porting-image-segmentation.html
+// Calculate gaussian blur
+// Adapted from http://pvnick.blogspot.com/2010/01/im-currently-porting-image-segmentation.html
 function gaussianBlur(img, pixels, amount) {
 
 	var width = img.width;
