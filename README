@@ -16,6 +16,7 @@ will create a temporary canvas element and manipulate the image
 there, before finally saving it back out to the original element.
 
 See PaintbrushJS in action: http://mezzoblue.github.com/PaintbrushJS/demo/
+Usage examples: http://mezzoblue.github.com/PaintbrushJS/demo/usage.html
 Documentation: http://wiki.github.com/mezzoblue/PaintbrushJS/documentation
 
 
