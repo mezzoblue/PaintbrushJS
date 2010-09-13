@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+	<head>
+		<title>PaintbrushJS Playground &#8212; Example Usage</title>
+		<meta charset="utf-8" />
+
+		<script type="text/javascript" src="script/common.js"></script>
+		<script type="text/javascript" src="script/paintbrush.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="css/playground.css" />
+	</head>
+	<body>
+		
+		<header>
+			<h1><a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS</a> Playground</h1>
+			<aside>
+				<span>by Dave Shea</span>
+				<a href="http://twitter.com/mezzoblue">@mezzoblue</a>
+			</aside>
+		</header>
+		
+		<a href="http://github.com/mezzoblue/PaintbrushJS" class="github">Fork me on GitHub</a>
+		
+		<div id="examples">
+
+			<img class="filtered filter-blur" src="images/500/bee.jpg" width="200" height="133" alt="">
+			<h2>Basic Blur</h2>
+			<textarea>&lt;img src="bee.jpg" 
+	width="200" height="133"
+	class="filter-blur"&gt;</textarea>
+
+			<img class="filtered filter-blur" data-pb-blur-amount="5" src="images/500/jordan.jpg" width="200" height="133" alt="">
+			<h2>Blur Value 5</h2>
+			<textarea>&lt;img src="jordan.jpg" 
+	width="200" height="133"
+	class="filter-blur"
+	data-pb-blur-amount="5"&gt;</textarea>
+
+			<img class="filtered filter-greyscale" src="images/500/sign.jpg" width="200" height="133" alt="">
+			<h2>Basic Greyscale</h2>
+			<textarea>&lt;img src="leaves.jpg" 
+	width="200" height="133"
+	class="filter-greyscale"&gt;</textarea>
+
+			<img class="filtered filter-greyscale" data-pb-greyscale-opacity="0.5" src="images/500/leaves.jpg" width="200" height="133" alt="">
+			<h2>Greyscale Value 0.5</h2>
+			<textarea>&lt;img src="leaves.jpg" 
+	width="200" height="133"
+	class="filter-greyscale"
+	data-pb-greyscale-opacity="0.5"&gt;</textarea>
+
+			<img class="filtered filter-mosaic" src="images/500/staples.jpg" width="200" height="133" alt="">
+			<h2>Basic Mosaic</h2>
+			<textarea>&lt;img src="staples.jpg" 
+	width="200" height="133"
+	class="filter-mosaic"&gt;</textarea>
+
+			<img class="filtered filter-mosaic" data-pb-mosaic-size="15" data-pb-mosaic-opacity="0.5" src="images/500/louvre.jpg" width="200" height="133" alt="">
+			<h2>Mosaic Size 12, Opacity 0.5</h2>
+			<textarea>&lt;img src="louvre.jpg" 
+	width="200" height="133"
+	class="filter-mosaic"
+	data-pb-mosaic-amount="15"
+	data-pb-mosaic-opacity="0.5"&gt;</textarea>
+
+
+			<img class="filtered filter-noise" src="images/500/lighthouse.jpg" width="200" height="133" alt="">
+			<h2>Basic Noise</h2>
+			<textarea>&lt;img src="lighthouse.jpg" 
+	width="200" height="133"
+	class="filter-noise"&gt;</textarea>
+
+			<img class="filtered filter-noise" data-pb-noise-amount="100" data-pb-noise-type="colour" src="images/500/stones.jpg" width="200" height="133" alt="">
+			<h2>Noise Amount 100, Type Colour</h2>
+			<textarea>&lt;img src="stones.jpg" 
+	width="200" height="133"
+	class="filter-noise"
+	data-pb-noise-amount="100"
+	data-pb-noise-type="colour"&gt;</textarea>
+
+		</div>
+
+
+
+		<section id="description">
+			<aside>
+				<a href="http://github.com/mezzoblue/PaintbrushJS/zipball/master">Download Now</a>
+				<p>PaintbrushJS v0.2</p>
+			</aside>
+		
+			<p>PaintbrushJS is a lightweight browser-based image processing library built with Javascript and canvas. All photos by <a href="http://www.flickr.com/photos/mezzoblue/sets/72057594064508706/">Dave Shea</a>.</p>
+
+			<ul>
+				<li>Get the source code on GitHub: <a href="http://github.com/mezzoblue/PaintbrushJS">mezzoblue/PaintbrushJS</a></li>
+				<li>See <a href="http://wiki.github.com/mezzoblue/PaintbrushJS/documentation">usage &amp; documentation</a></li>
+				<li>There are some <a href="http://wiki.github.com/mezzoblue/PaintbrushJS/known-issues">known issues</a></li>
+			</ul>
+		</section>
+
+
+
+		
+		<footer>
+			<p id="copyright">&copy; Copyright 2010, Dave Shea. <a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS lives on GitHub</a>. <a href="http://www.opensource.org/licenses/mit-license.php">MIT Licensed</a>.</p>
+		</footer>
+
+	</body>
+</html>
