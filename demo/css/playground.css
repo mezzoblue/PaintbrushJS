@@ -221,12 +221,13 @@ header aside {
 	font-size: 13px;
 	text-shadow: rgba(0, 0, 0, 0.33) 0 1px 3px;
 	text-align: center;
-	border: solid 1px #ee5fbe;
+	border: solid 1px #e338aa;
 	-webkit-border-radius: 15px;
 	-moz-border-radius: 15px;
 	border-radius: 15px;
 	color: #fff;
 	background: #e338aa;
+	opacity: 0.7;
 
 	background: -webkit-gradient(
 	    linear,
@@ -245,11 +246,12 @@ header aside {
 	-moz-box-shadow: rgba(0, 0, 0, 0.66) 0 2px 3px;
 	box-shadow: rgba(0, 0, 0, 0.66) 0 2px 3px;
 	
-	-webkit-transition: -webkit-box-shadow 0.25s linear;
+	-webkit-transition: -webkit-box-shadow, opacity 0.25s linear;
 }
 	#description aside a:hover, #description aside a:focus {
 		text-decoration: none;
 		text-shadow: rgba(0, 0, 0, 0.5) 0 1px 2px;
+		border-color: #ee5fbe;
 		-webkit-box-shadow: rgba(0, 0, 0, 0.66) 0 3px 6px;
 		-moz-box-shadow: rgba(0, 0, 0, 0.66) 0 3px 6px;
 		box-shadow: rgba(0, 0, 0, 0.66) 0 3px 6px;
@@ -265,6 +267,7 @@ header aside {
 		    rgb(200,49,150) 0%,
 		    rgb(227,56,170) 100%
 		);
+		opacity: 1;
 	}
 
 																						/* -- Footer Layout -- */

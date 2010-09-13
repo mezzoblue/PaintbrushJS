@@ -173,11 +173,18 @@ addLoadEvent(function() {
 	// also add a hook for range sliders
 	inputs = interaction.getElementsByTagName("input");
 	for (var i = 0; i < inputs.length; i++) {
-		if (inputs[i].type.toLowerCase() == "range" || "radio") {
+		if (inputs[i].type.toLowerCase() == "range") {
 			// kills performance if we're calling it onchange.
 			// but inaccessible / irrelevant to mobile if we do it onmouseup.
 			// damned if we do... I'm favouring speed here, would love input.
 			inputs[i].onmouseup = function() {		
+				updateFilters(img);
+			}
+		}
+		// fallback for radio buttons, colour input
+		// (and browsers that don't do range yet, hint hint Firefox)
+		if (inputs[i].type.toLowerCase() == ("text" || "radio")) {
+			inputs[i].onchange = function() {		
 				updateFilters(img);
 			}
 		}
@@ -225,9 +232,11 @@ function updateFilters(img) {
 				// loop through the inputs, grabbing the names and values and 
 				// setting them as attributes on the reference object
 				for (var j = 0; j < inputs.length; j++) {
-					if (inputs[j].type == "range" || "text") addAttribute(img, inputs[j].name, inputs[j].value);
-					if (inputs[j].type == "radio") {
-						if (inputs[j].checked) addAttribute(img, inputs[j].name, inputs[j].value);
+					if (inputs[j].type == ("range" || "text")) addAttribute(img, inputs[j].name, inputs[j].value);
+					if ((inputs[j].type == "radio")) {
+						if (inputs[j].checked) {
+							addAttribute(img, inputs[j].name, inputs[j].value);
+						}
 					}
 				}
 			}

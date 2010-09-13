@@ -229,17 +229,17 @@ function gaussianBlur(img, pixels, amount) {
 
 // remove a specific class from an element
 // from http://www.openjs.com/scripts/dom/class_manipulation.php
-function removeClass(ref, cls) {
-	if (hasClass(ref, cls)) {
+function removeClass(obj, cls) {
+	if (hasClass(obj, cls)) {
 		var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
-		ref.className = ref.className.replace(reg, ' ');
+		obj.className = obj.className.replace(reg, ' ');
 	}
 }
-function addClass(ref, cls) {
-	if (!this.hasClass(ref, cls)) {
-		ref.className += " " + cls;
+function addClass(obj, cls) {
+	if (!this.hasClass(obj, cls)) {
+		obj.className += " " + cls;
  	}
 }
-function hasClass(ref, cls) {
-	return ref.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+function hasClass(obj, cls) {
+	return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
 }
