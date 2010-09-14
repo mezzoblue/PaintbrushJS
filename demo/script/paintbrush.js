@@ -328,20 +328,43 @@ function addFilter(filterType, buffer, c) {
 
 	function applyMatrix(img, pixels, params) {
 
-		// -------------
-		// been leaning on this a lot:
-		// http://forum.processing.org/topic/controlled-blur-or-edge-detect-effect-using-convolution-kernel
-		// -------------
+		// create a second buffer to hold matrix results
+		var buffer2 = document.createElement("canvas");
+		// get the canvas context 
+		var c2 = buffer2.getContext('2d');
+
+		// set the dimensions
+		c2.width = buffer2.width = img.width;
+		c2.height = buffer2.height = img.height;
+
+		// draw the image to the new buffer
+		c2.drawImage(img, 0, 0, img.width , img.height);
+		var bufferedPixels = c2.getImageData(0, 0, c.width, c.height)
 
 		// speed up access
-		var data = pixels.data, imgWidth = img.width;
+		var data = pixels.data, bufferedData = bufferedPixels.data, imgWidth = img.width;
 
 		// 3x3 matrix can be any combination of digits, though to maintain brightness they should add up to 1
 		// (-1 x 8 + 9 = 1)
 		var matrix = [
+/*
+			// sharpen
 			-1,		-1,		-1,
 			-1,		9,		-1,
 			-1,		-1,		-1
+*/
+
+			// emboss
+			-2,		-1,		0,
+			-1,		1,		1,
+			0,		1,		2
+
+/*
+			// reverse emboss
+			2,		1,		0,
+			1,		1,		-1,
+			0,		-1,		-2
+*/
 
 /*
 			0,		-1,		0,
@@ -350,6 +373,7 @@ function addFilter(filterType, buffer, c) {
 */
 
 /*
+			// box blur
 			0.111,		0.111,		0.111,
 			0.111,		0.111,		0.111,
 			0.111,		0.111,		0.111
@@ -379,9 +403,9 @@ function addFilter(filterType, buffer, c) {
 
 						// find RGB values for that pixel
 						var currentPixel = {
-							r: data[r],
-							g: data[r + 1],
-							b: data[r + 2]
+							r: bufferedData[r],
+							g: bufferedData[r + 1],
+							b: bufferedData[r + 2]
 						};
 
 						// apply the value from the current matrix position
@@ -408,6 +432,8 @@ function addFilter(filterType, buffer, c) {
 					findColorDifference(params.matrixAmount, sumB, thisPixel.b));
 			}
 		}
+
+		// code to clean the secondary buffer out of the DOM would be good here
 
 		return(pixels);
 	}

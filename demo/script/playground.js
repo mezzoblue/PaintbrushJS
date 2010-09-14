@@ -33,6 +33,13 @@ var filterControl = {
 		},
 
 		{
+			"name"			: "matrix",
+			"label"			: "Matrix",
+			"filterClass"	: "filter-matrix",
+			"controlId"		: "controls-matrix"
+		},
+
+		{
 			"name"			: "mosaic",
 			"label"			: "Mosaic",
 			"filterClass"	: "filter-mosaic",
@@ -102,7 +109,6 @@ addLoadEvent(function() {
 	
 	// initialize the control panel
 	displayControls();
-	updateFilters(img);
 
 });
 
