@@ -26,6 +26,13 @@ var filterControl = {
 		},
 
 		{
+			"name"			: "emboss",
+			"label"			: "Emboss",
+			"filterClass"	: "filter-emboss",
+			"controlId"		: "controls-emboss"
+		},
+
+		{
 			"name"			: "greyscale",
 			"label"			: "Greyscale",
 			"filterClass"	: "filter-greyscale",
@@ -58,6 +65,13 @@ var filterControl = {
 			"label"			: "Sepia Tone",
 			"filterClass"	: "filter-sepia",
 			"controlId"		: "controls-sepia"
+		},
+
+		{
+			"name"			: "sharpen",
+			"label"			: "Sharpen",
+			"filterClass"	: "filter-sharpen",
+			"controlId"		: "controls-sharpen"
 		},
 
 		{
@@ -102,7 +116,6 @@ addLoadEvent(function() {
 	
 	// initialize the control panel
 	displayControls();
-	updateFilters(img);
 
 });
 
