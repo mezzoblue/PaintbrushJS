@@ -26,17 +26,17 @@ var filterControl = {
 		},
 
 		{
+			"name"			: "emboss",
+			"label"			: "Emboss",
+			"filterClass"	: "filter-emboss",
+			"controlId"		: "controls-emboss"
+		},
+
+		{
 			"name"			: "greyscale",
 			"label"			: "Greyscale",
 			"filterClass"	: "filter-greyscale",
 			"controlId"		: "controls-greyscale"
-		},
-
-		{
-			"name"			: "matrix",
-			"label"			: "Matrix",
-			"filterClass"	: "filter-matrix",
-			"controlId"		: "controls-matrix"
 		},
 
 		{
@@ -65,6 +65,13 @@ var filterControl = {
 			"label"			: "Sepia Tone",
 			"filterClass"	: "filter-sepia",
 			"controlId"		: "controls-sepia"
+		},
+
+		{
+			"name"			: "sharpen",
+			"label"			: "Sharpen",
+			"filterClass"	: "filter-sharpen",
+			"controlId"		: "controls-sharpen"
 		},
 
 		{
