@@ -35,6 +35,7 @@ function processFilters() {
 	if (supports_canvas()) {
 		// you can add or remove lines here, depending on which filters you're using.
 		addFilter("filter-blur", buffer, c);
+		addFilter("filter-edges", buffer, c);
 		addFilter("filter-emboss", buffer, c);
 		addFilter("filter-greyscale", buffer, c);
 		addFilter("filter-matrix", buffer, c);
@@ -93,6 +94,15 @@ function addFilter(filterType, buffer, c) {
 				if (filterType == "filter-blur") {
 					pixels = gaussianBlur(img, pixels, params.blurAmount);
 				}
+
+				if (filterType == "filter-edges") {
+					var matrix = [
+						0,		1,		0,
+						1,		-4,		1,
+						0,		1,		0
+					];
+					pixels = applyMatrix(img, pixels, matrix, params.edgesAmount);
+				}
 				if (filterType == "filter-emboss") {
 					var matrix = [
 						-2,		-1,		0,
@@ -111,6 +121,7 @@ function addFilter(filterType, buffer, c) {
 						0.111,		0.111,		0.111,
 						0.111,		0.111,		0.111
 					];
+
 					pixels = applyMatrix(img, pixels, matrix, params.matrixAmount);
 				}
 				if (filterType == "filter-sharpen") {
@@ -257,7 +268,7 @@ function addFilter(filterType, buffer, c) {
 		var data = pixels.data, bufferedData = bufferedPixels.data, imgWidth = img.width;
 
 		// make sure the matrix adds up to 1
-		matrix = normalizeMatrix(matrix);
+/* 		matrix = normalizeMatrix(matrix); */
 
 		// calculate the dimensions, just in case this ever expands to 5 and beyond
 		var matrixSize = Math.sqrt(matrix.length);
@@ -356,9 +367,10 @@ function getFilterParameters(ref) {
 	// create the params object and set some default parameters up front
 	var params = {
 		"blurAmount"		:	1,		// 0 and higher
-		"embossAmount"		:	0.2,	// between 0 and 1
+		"edgesAmount"		:	1,		// between 0 and 1
+		"embossAmount"		:	0.25,	// between 0 and 1
 		"greyscaleOpacity"	:	1,		// between 0 and 1
-		"matrixAmount"		:	0.2,	// between 0 and 1
+		"matrixAmount"		:	1,		// between 0 and 1
 		"mosaicOpacity"		:	1,		// between 0 and 1
 		"mosaicSize"		:	5,		// 1 and higher
 		"noiseAmount"		:	30,		// 0 and higher
@@ -366,7 +378,7 @@ function getFilterParameters(ref) {
 		"posterizeAmount"	:	5,		// 0 - 255, though 0 and 1 are relatively useless
 		"posterizeOpacity"	:	1,		// between 0 and 1
 		"sepiaOpacity"		:	1,		// between 0 and 1
-		"sharpenAmount"		:	0.2,	// between 0 and 1
+		"sharpenAmount"		:	0.25,	// between 0 and 1
 		"tintColor"			:	"#FFF",	// any hex color
 		"tintOpacity"		:	0.3		// between 0 and 1
 	};
