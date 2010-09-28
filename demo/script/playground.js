@@ -18,11 +18,20 @@
 // filter master control object
 var filterControl = {
 	"filters"	:	[
+
 		{
 			"name"			: "blur",
 			"label"			: "Gaussian Blur",
 			"filterClass"	: "filter-blur",
 			"controlId"		: "controls-blur"
+		},
+
+
+		{
+			"name"			: "edges",
+			"label"			: "Detect Edges",
+			"filterClass"	: "filter-edges",
+			"controlId"		: "controls-edges"
 		},
 
 		{
@@ -38,6 +47,7 @@ var filterControl = {
 			"filterClass"	: "filter-greyscale",
 			"controlId"		: "controls-greyscale"
 		},
+
 
 		{
 			"name"			: "mosaic",
