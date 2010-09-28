@@ -1,8 +1,171 @@
 <!doctype html>
 <html>
 	<head>
-	<script type="text/javascript">
-		window.location = "demo/index.html";
-	</script>
+		<title>PaintbrushJS Playground</title>
+		<meta charset="utf-8" />
+
+		<script type="text/javascript" src="script/common.js"></script>
+		<script type="text/javascript" src="script/paintbrush.js"></script>
+		<script type="text/javascript" src="script/playground.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="css/playground.css" />
 	</head>
+	<body>
+		
+		<header>
+			<h1><a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS</a> Playground</h1>
+			<aside>
+				<span>by Dave Shea</span>
+				<a href="http://twitter.com/mezzoblue">@mezzoblue</a>
+			</aside>
+		</header>
+		
+		<a href="http://github.com/mezzoblue/PaintbrushJS" class="github">Fork me on GitHub</a>
+		
+		<form action="#" method="post" id="interaction-form">
+		<div id="interaction">
+
+			<ul class="thumbnails">
+				<li class="thumb"><img src="images/500/lighthouse.jpg" width="50" height="33" alt=""></li>
+				<li class="thumb"><img src="images/500/staples.jpg" width="50" height="33" alt=""></li>
+				<li class="thumb current"><img src="images/500/bee.jpg" width="50" height="33" alt=""></li>
+				<li class="thumb"><img src="images/500/leaves.jpg" width="50" height="33" alt=""></li>
+				<li class="thumb"><img src="images/500/louvre.jpg" width="50" height="33" alt=""></li>
+				<li class="thumb"><img src="images/500/sign.jpg" width="50" height="33" alt=""></li>
+				<li class="thumb"><img src="images/500/road.jpg" width="50" height="33" alt=""></li>
+				<li class="thumb"><img src="images/500/jordan.jpg" width="50" height="33" alt=""></li>
+				<li class="thumb"><img src="images/500/stones.jpg" width="50" height="33" alt=""></li>
+			</ul>
+
+			<img id="filter-target" src="images/500/bee.jpg" width="500" height="333" alt="">
+
+			<label class="selector">
+				Filter:
+				<select id="filter-selector"></select>
+			</label>
+
+			<div class="controls" id="controls-blur">
+				<label>
+					Amount:
+					<input type="range" name="data-pb-blur-amount" min="0" max="10" step="0.05" value="0">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-edges">
+				<label>
+					Amount:
+					<input type="range" name="data-pb-edges-amount" min="0" max="1" step="0.01" value="1">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-emboss">
+				<label>
+					Amount:
+					<input type="range" name="data-pb-emboss-amount" min="0" max="1" step="0.01" value="0.2">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-greyscale">
+				<label>
+					Opacity:
+					<input type="range" name="data-pb-greyscale-opacity" min="0" max="1" step="0.01" value="1">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-matrix">
+				<label>
+					Amount:
+					<input type="range" name="data-pb-matrix-amount" min="0" max="1" step="0.01" value="0.2">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-mosaic">
+				<label>
+					Opacity:
+					<input type="range" name="data-pb-mosaic-opacity" min="0" max="1" step="0.01" value="1">
+				</label>
+				<label>
+					Size:
+					<input type="range" name="data-pb-mosaic-size" min="1" max="40" step="1" value="5">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-noise">
+				<label>
+					Amount:
+					<input type="range" name="data-pb-noise-amount" min="0" max="100" step="1" value="30">
+				</label>
+				<label>
+					Type:
+					<input type="radio" name="data-pb-noise-type" value="mono"> Mono
+					<input type="radio" name="data-pb-noise-type" value="colour"> Colour
+				</label>
+			</div>
+
+			<div class="controls" id="controls-posterize">
+				<label>
+					Amount:
+					<input type="range" name="data-pb-posterize-amount" min="2" max="100" step="1" value="5">
+				</label>
+				<label>
+					Opacity:
+					<input type="range" name="data-pb-posterize-opacity" min="0" max="1" step="0.01" value="1">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-sepia">
+				<label>
+					Opacity:
+					<input type="range" name="data-pb-sepia-opacity" min="0" max="1" step="0.01" value="0.5">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-sharpen">
+				<label>
+					Amount:
+					<input type="range" name="data-pb-sharpen-amount" min="0" max="1" step="0.01" value="0.2">
+				</label>
+			</div>
+
+			<div class="controls" id="controls-tint">
+				<label>
+					Colour:
+					<input type="text" name="data-pb-tint-color" value="#FF0000">
+				</label>
+				<label>
+					Opacity:
+					<input type="range" name="data-pb-tint-opacity" min="0" max="1" step="0.01" value="0.5">
+				</label>
+			</div>
+			
+			<button class="apply" type="submit">Apply</button>
+
+		</div>		
+		</form>		
+
+
+
+		<section id="description">
+			<aside>
+				<a href="http://github.com/mezzoblue/PaintbrushJS/zipball/master">Download Now</a>
+				<p>PaintbrushJS v0.3</p>
+			</aside>
+		
+			<p>PaintbrushJS is a lightweight browser-based image processing library built with Javascript and canvas. All photos by <a href="http://www.flickr.com/photos/mezzoblue/sets/72057594064508706/">Dave Shea</a>.</p>
+
+			<ul>
+				<li>Get the source code on GitHub: <a href="http://github.com/mezzoblue/PaintbrushJS">mezzoblue/PaintbrushJS</a></li>
+				<li>See <a href="http://wiki.github.com/mezzoblue/PaintbrushJS/documentation">usage &amp; documentation</a></li>
+				<li>There are some <a href="http://wiki.github.com/mezzoblue/PaintbrushJS/known-issues">known issues</a></li>
+			</ul>
+		</section>
+
+
+
+		
+		<footer>
+			<p id="copyright">&copy; Copyright 2010, Dave Shea. <a href="http://github.com/mezzoblue/PaintbrushJS">PaintbrushJS lives on GitHub</a>. <a href="http://www.opensource.org/licenses/mit-license.php">MIT Licensed</a>.</p>
+		</footer>
+
+	</body>
 </html>
