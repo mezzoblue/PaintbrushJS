@@ -20,6 +20,13 @@ var filterControl = {
 	"filters"	:	[
 
 		{
+			"name"			: "hsl",
+			"label"			: "HSL",
+			"filterClass"	: "filter-hsl",
+			"controlId"		: "controls-hsl"
+		},
+
+		{
 			"name"			: "blur",
 			"label"			: "Gaussian Blur",
 			"filterClass"	: "filter-blur",

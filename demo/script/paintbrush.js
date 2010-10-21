@@ -50,6 +50,7 @@ function processFilters() {
 		addFilter("filter-edges", buffer, c);
 		addFilter("filter-emboss", buffer, c);
 		addFilter("filter-greyscale", buffer, c);
+		addFilter("filter-hsl", buffer, c);
 		addFilter("filter-matrix", buffer, c);
 		addFilter("filter-mosaic", buffer, c);
 		addFilter("filter-noise", buffer, c);
@@ -187,17 +188,53 @@ function addFilter(filterType, buffer, c) {
 		// speed up access
 		var data = pixels.data, val;
 		var imgWidth = img.width;
+		var r = thisPixel.r;
+		var g = thisPixel.g;
+		var b = thisPixel.b;
 
 		// figure out which filter to apply, and do it	
 		switch(filterType) {
 
 			case "filter-greyscale":
-				val = (thisPixel.r * 0.21) + (thisPixel.g * 0.71) + (thisPixel.b * 0.07);
+				val = (r * 0.21) + (g * 0.71) + (b * 0.07);
 				data = setRGB(data, index, 
-					findColorDifference(params.greyscaleOpacity, val, thisPixel.r),
-					findColorDifference(params.greyscaleOpacity, val, thisPixel.g),
-					findColorDifference(params.greyscaleOpacity, val, thisPixel.b));
+					findColorDifference(params.greyscaleOpacity, val, r),
+					findColorDifference(params.greyscaleOpacity, val, g),
+					findColorDifference(params.greyscaleOpacity, val, b));
 				break;
+
+			case "filter-hsl":
+				var hPrime = null;
+				var Max = Math.max(r, g, b);
+				var Min = Math.min(r, g, b);
+				var chroma = Max - Min;
+            
+				// calculate the hue
+				if (chroma > 0) {
+	            	if (Max == r) {
+	            		hPrime = ((g - b) / chroma) % 6;
+	            	}
+	            	if (Max == g) {
+	            		hPrime = ((b - r) / chroma) + 2;
+					}
+	            	if (Max == g) {
+	            		hPrime = ((r - g) / chroma) + 4;
+					}
+				}
+				var hue = hPrime * 60;
+
+				// calculate lightness
+				var lightness = (Max + Min) / 2;
+
+				// temporary
+				var val = lightness;
+
+				data = setRGB(data, index, 
+					findColorDifference(params.hslOpacity, val, r),
+					findColorDifference(params.hslOpacity, val, g),
+					findColorDifference(params.hslOpacity, val, b));
+				break;
+				
 
 			case "filter-mosaic":
 				// a bit more verbose to reduce amount of math necessary
@@ -212,9 +249,9 @@ function addFilter(filterType, buffer, c) {
 				pos = pos << 2;
 
 				data = setRGB(data, index,
-					findColorDifference(params.mosaicOpacity, data[pos], thisPixel.r),
-					findColorDifference(params.mosaicOpacity, data[pos + 1], thisPixel.g),
-					findColorDifference(params.mosaicOpacity, data[pos + 2], thisPixel.b));
+					findColorDifference(params.mosaicOpacity, data[pos], r),
+					findColorDifference(params.mosaicOpacity, data[pos + 1], g),
+					findColorDifference(params.mosaicOpacity, data[pos + 2], b));
 				break;
 
 			case "filter-noise":
@@ -222,36 +259,36 @@ function addFilter(filterType, buffer, c) {
 
 				if ((params.noiseType == "mono") || (params.noiseType == "monochrome")) {
 					data = setRGB(data, index, 
-						checkRGBBoundary(thisPixel.r + val),
-						checkRGBBoundary(thisPixel.g + val),
-						checkRGBBoundary(thisPixel.b + val));
+						checkRGBBoundary(r + val),
+						checkRGBBoundary(g + val),
+						checkRGBBoundary(b + val));
 				} else {
 					data = setRGB(data, index, 
-						checkRGBBoundary(thisPixel.r + noise(params.noiseAmount)),
-						checkRGBBoundary(thisPixel.g + noise(params.noiseAmount)),
-						checkRGBBoundary(thisPixel.b + noise(params.noiseAmount)));
+						checkRGBBoundary(r + noise(params.noiseAmount)),
+						checkRGBBoundary(g + noise(params.noiseAmount)),
+						checkRGBBoundary(b + noise(params.noiseAmount)));
 				}
 				break;
 
 			case "filter-posterize":
 				data = setRGB(data, index, 
-					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(thisPixel.r / params.posterizeAreas)), thisPixel.r),
-					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(thisPixel.g / params.posterizeAreas)), thisPixel.g),
-					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(thisPixel.b / params.posterizeAreas)), thisPixel.b));
+					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(r / params.posterizeAreas)), r),
+					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(g / params.posterizeAreas)), g),
+					findColorDifference(params.posterizeOpacity, parseInt(params.posterizeValues * parseInt(b / params.posterizeAreas)), b));
 				break;
 
 			case "filter-sepia":
 				data = setRGB(data, index, 
-					findColorDifference(params.sepiaOpacity, (thisPixel.r * 0.393) + (thisPixel.g * 0.769) + (thisPixel.b * 0.189), thisPixel.r),
-					findColorDifference(params.sepiaOpacity, (thisPixel.r * 0.349) + (thisPixel.g * 0.686) + (thisPixel.b * 0.168), thisPixel.g),
-					findColorDifference(params.sepiaOpacity, (thisPixel.r * 0.272) + (thisPixel.g * 0.534) + (thisPixel.b * 0.131), thisPixel.b));
+					findColorDifference(params.sepiaOpacity, (r * 0.393) + (g * 0.769) + (b * 0.189), r),
+					findColorDifference(params.sepiaOpacity, (r * 0.349) + (g * 0.686) + (b * 0.168), g),
+					findColorDifference(params.sepiaOpacity, (r * 0.272) + (g * 0.534) + (b * 0.131), b));
 				break;
 
 			case "filter-tint":
 				data = setRGB(data, index, 
-					findColorDifference(params.tintOpacity, dest.r, thisPixel.r),
-					findColorDifference(params.tintOpacity, dest.g, thisPixel.g),
-					findColorDifference(params.tintOpacity, dest.b, thisPixel.b));
+					findColorDifference(params.tintOpacity, dest.r, r),
+					findColorDifference(params.tintOpacity, dest.g, g),
+					findColorDifference(params.tintOpacity, dest.b, b));
 				break;
 
 
@@ -278,9 +315,6 @@ function addFilter(filterType, buffer, c) {
 
 		// speed up access
 		var data = pixels.data, bufferedData = bufferedPixels.data, imgWidth = img.width;
-
-		// make sure the matrix adds up to 1
-/* 		matrix = normalizeMatrix(matrix); */
 
 		// calculate the dimensions, just in case this ever expands to 5 and beyond
 		var matrixSize = Math.sqrt(matrix.length);
@@ -334,19 +368,6 @@ function addFilter(filterType, buffer, c) {
 		return(pixels);
 	}
 
-	// ensure that values in a matrix add up to 1
-	function normalizeMatrix(matrix) {
-		var j = 0;
-		for (var i = 0; i < matrix.length; i++) {
-			j += matrix[i];
-		}
-		for (var i = 0; i < matrix.length; i++) {
-			matrix[i] /= j;
-		}
-		return matrix;
-	}
-
-
 
 	// convert x/y coordinates to pixel index reference
 	function convertCoordinates(x, y, w) {
@@ -382,6 +403,10 @@ function getFilterParameters(ref) {
 		"edgesAmount"		:	1,		// between 0 and 1
 		"embossAmount"		:	0.25,	// between 0 and 1
 		"greyscaleOpacity"	:	1,		// between 0 and 1
+		"hslOpacity"		:	1,		// between 0 and 1
+		"hslHue"			:	180,	// between 0 and 360
+		"hslSaturation"		:	1,		// between 0 and 1
+		"hslLightness"		:	1,		// between 0 and 1
 		"matrixAmount"		:	1,		// between 0 and 1
 		"mosaicOpacity"		:	1,		// between 0 and 1
 		"mosaicSize"		:	5,		// 1 and higher
