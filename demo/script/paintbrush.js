@@ -208,6 +208,7 @@ function addFilter(filterType, buffer, c) {
 				var Max = Math.max(r, g, b);
 				var Min = Math.min(r, g, b);
 				var chroma = Max - Min;
+				var saturation = 0;
             
 				// calculate the hue
 				if (chroma > 0) {
@@ -225,9 +226,23 @@ function addFilter(filterType, buffer, c) {
 
 				// calculate lightness
 				var lightness = (Max + Min) / 2;
+				
+				// calculate saturation
+				if (chroma > 0) {
+					if (params.hslLightness <= 0.5) {
+						saturation = chroma / (2 * params.hslLightness);
+					}
+					if (params.hslLightness > 0.5) {
+						saturation = chroma / (2 - (2 * params.hslLightness));
+					}
+				}
+				
+				var x = chroma * (1 - Math.abs((hPrime % 2) - 1))
 
+				console.log(hPrime);
+				
 				// temporary
-				var val = lightness;
+/* 				var val = (255 * params.hslLightness) + lightness; */
 
 				data = setRGB(data, index, 
 					findColorDifference(params.hslOpacity, val, r),
