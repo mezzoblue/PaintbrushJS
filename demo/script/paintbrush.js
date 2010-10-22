@@ -196,20 +196,30 @@ function addFilter(filterType, buffer, c) {
 		switch(filterType) {
 
 			case "filter-greyscale":
-				val = (r * 0.21) + (g * 0.71) + (b * 0.07);
+				val = (r * 0.21) + (g * 0.71) + (b * 0.08);
 				data = setRGB(data, index, 
 					findColorDifference(params.greyscaleOpacity, val, r),
 					findColorDifference(params.greyscaleOpacity, val, g),
 					findColorDifference(params.greyscaleOpacity, val, b));
 				break;
 
+
+
+
+
+
+
 			case "filter-hsl":
 				var hPrime = null;
+				r = r / 255;
+				g = g / 255;
+				b = b / 255;
 				var Max = Math.max(r, g, b);
 				var Min = Math.min(r, g, b);
 				var chroma = Max - Min;
 				var saturation = 0;
-            
+
+
 				// calculate the hue
 				if (chroma > 0) {
 	            	if (Max == r) {
@@ -224,9 +234,11 @@ function addFilter(filterType, buffer, c) {
 				}
 				var hue = hPrime * 60;
 
+
 				// calculate lightness
 				var lightness = (Max + Min) / 2;
-				
+
+
 				// calculate saturation
 				if (chroma > 0) {
 					if (params.hslLightness <= 0.5) {
@@ -237,18 +249,57 @@ function addFilter(filterType, buffer, c) {
 					}
 				}
 				
-				var x = chroma * (1 - Math.abs((hPrime % 2) - 1))
 
-				console.log(hPrime);
-				
 				// temporary
-/* 				var val = (255 * params.hslLightness) + lightness; */
+/*
+				hue = (255 * params.hslHue) + hue;
+				lightness = (255 * params.hslLightness) + lightness;
+				saturation = (255 * params.hslSaturation) + saturation;
+*/
+
+				if (lightness > 0.5) {
+					chroma = (2 - 2 * lightness) * saturation;
+				} else {
+					chroma = (2 * lightness) * saturation;
+				}
+				hPrime = hue / 60;
+				var x = chroma * (1 - Math.abs((hPrime % 2) - 1));
+				var m = lightness - chroma / 2;
+				
+				var r1;
+				var g1;
+				var b1;
+				if ((hPrime >= 0) && (hPrime < 1)) {
+					r1 = c; g1 = x; b1 = 0;
+				}
+				if ((hPrime >= 1) && (hPrime < 2)) {
+					r1 = x; g1 = c; b1 = 0;
+				}
+				if ((hPrime >= 2) && (hPrime < 3)) {
+					r1 = 0; g1 = c; b1 = x;
+				}
+				if ((hPrime >= 3) && (hPrime < 4)) {
+					r1 = 0; g1 = x; b1 = c;
+				}
+				if ((hPrime >= 4) && (hPrime < 5)) {
+					r1 = x; g1 = 0; b1 = c;
+				}
+				if ((hPrime >= 5) && (hPrime < 6)) {
+					r1 = c; g1 = 0; b1 = x;
+				}
+				
 
 				data = setRGB(data, index, 
-					findColorDifference(params.hslOpacity, val, r),
-					findColorDifference(params.hslOpacity, val, g),
-					findColorDifference(params.hslOpacity, val, b));
+					findColorDifference(params.hslOpacity, (r1 + m) * 255, r),
+					findColorDifference(params.hslOpacity, (g1 + m) * 255, g),
+					findColorDifference(params.hslOpacity, (b1 + m) * 255, b));
 				break;
+
+
+
+
+
+
 				
 
 			case "filter-mosaic":
