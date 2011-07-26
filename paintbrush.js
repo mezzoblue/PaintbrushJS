@@ -270,8 +270,10 @@ function addFilter(filterType, buffer, c) {
 		// make sure the matrix adds up to 1
 /* 		matrix = normalizeMatrix(matrix); */
 
-		// calculate the dimensions, just in case this ever expands to 5 and beyond
+		// calculate the size of the matrix
 		var matrixSize = Math.sqrt(matrix.length);
+		// also store the size of the kernel radius (half the size of the matrix)
+		var kernelRadius = Math.floor(matrixSize / 2);
 		
 		// loop through every pixel
 		for (var i = 1; i < imgWidth - 1; i++) {
@@ -285,7 +287,7 @@ function addFilter(filterType, buffer, c) {
 					for (var w = 0; w < matrixSize; w++) {
 
 						// get a refence to a pixel position in the matrix
-						var r = convertCoordinates(i + h - 1, j + w - 1, imgWidth) << 2;
+						var r = convertCoordinates(i + w - kernelRadius, j + h - kernelRadius, imgWidth) << 2;
 
 						// find RGB values for that pixel
 						var currentPixel = {
