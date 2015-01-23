@@ -263,9 +263,6 @@ var paintBrush = {
             // speed up access
             var data = pixels.data, bufferedData = bufferedPixels.data, imgWidth = img.width;
 
-            // make sure the matrix adds up to 1
-            /* 		matrix = normalizeMatrix(matrix); */
-
             // calculate the size of the matrix
             var matrixSize = Math.sqrt(matrix.length);
             // also store the size of the kernel radius (half the size of the matrix)
@@ -319,20 +316,6 @@ var paintBrush = {
 
             return(pixels);
         }
-
-        // ensure that values in a matrix add up to 1
-        function normalizeMatrix(matrix) {
-            var j = 0;
-            for (var i = 0; i < matrix.length; i++) {
-                j += matrix[i];
-            }
-            for (var i = 0; i < matrix.length; i++) {
-                matrix[i] /= j;
-            }
-            return matrix;
-        }
-
-
 
         // convert x/y coordinates to pixel index reference
         function convertCoordinates(x, y, w) {
