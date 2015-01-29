@@ -11,16 +11,6 @@
 //    http://www.opensource.org/licenses/mit-license.php
 //
 // --------------------------------------------------
-
-
-
-
-// basic loader function to attach all filters used within the page
-addLoadEvent(function() {
-	paintBrush.processFilters();
-});
-
-
 var paintBrush = {
     // function to process all filters
     // (exists outside of loader to enable standalone use)
