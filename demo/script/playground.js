@@ -116,9 +116,9 @@ addLoadEvent(function() {
 
 	// add an event handler to swap control panels
 	filterSelector.onchange = function() {
-		removeClasses(img);
-		flushDataAttributes(img);
-		destroyStash(img, true);
+		paintBrush.removeClasses(img);
+		paintBrush.flushDataAttributes(img);
+		paintBrush.destroyStash(img, true);
 		// adjust visible control panel
 		displayControls();
 		updateFilters(img);
@@ -161,8 +161,8 @@ addLoadEvent(function() {
 				
 			
 				// clean up old image
-				removeClasses(img);
-				destroyStash(img);
+				paintBrush.removeClasses(img);
+				paintBrush.destroyStash(img);
 				img.src = this.getAttribute("src");
 				
 				// re-apply filters
@@ -235,14 +235,14 @@ function updateFilters(img) {
 		if (currentClass.substr(0, 7) == "pb-ref-") {
 
 			// clear reference object's data-pb-* attributes
-			flushDataAttributes(img);
+			paintBrush.flushDataAttributes(img);
 
 			// get the filter chooser
 			var filterSelector = getFilterSelector();
 
 			// go fetch the original and update the reference object source
 			var original = document.getElementById("pb-original-" + currentClass.substr(7, currentClass.length - 7));
-			placeReferenceImage(img, original.src, img);
+			paintBrush.placeReferenceImage(img, original.src, img);
 			img.style.visibility = "hidden";
 
 			// find the currently-selected filter
@@ -257,10 +257,10 @@ function updateFilters(img) {
 				// loop through the inputs, grabbing the names and values and 
 				// setting them as attributes on the reference object
 				for (var j = 0; j < inputs.length; j++) {
-					if ((inputs[j].type == "range") || (inputs[j].type == "text")) addAttribute(img, inputs[j].name, inputs[j].value);
+					if ((inputs[j].type == "range") || (inputs[j].type == "text")) paintBrush.addAttribute(img, inputs[j].name, inputs[j].value);
 					if ((inputs[j].type == "radio")) {
 						if (inputs[j].checked) {
-							addAttribute(img, inputs[j].name, inputs[j].value);
+							paintBrush.addAttribute(img, inputs[j].name, inputs[j].value);
 						}
 					}
 				}
@@ -269,7 +269,7 @@ function updateFilters(img) {
 	}
 
 	// finally, apply the filters
-	processFilters();
+	paintBrush.processFilters();
 
 	img.style.visibility = "visible";
 }
@@ -288,8 +288,8 @@ function displayControls() {
 	// set up the control panels
 	hideControls();
 	showCurrentControl(filterSelector);
-	flushDataAttributes(img);
-	removeClasses(img);
+	paintBrush.flushDataAttributes(img);
+	paintBrush.removeClasses(img);
 
 	// find the currently-selected filter
 	var options = filterSelector.getElementsByTagName("option");
